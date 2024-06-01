@@ -10,7 +10,6 @@ void Camera::Render(const Scene& scene,std::ostream& output)
     //逐像素渲染,从左到右，从上到下
     for(int y=0;y<imageHeight;y++)
     {
-
         //输出进度
         std::cout<<"正在渲染第"<<y+1<<"行剩余"<<imageHeight-y-1<<"行..."<<std::endl;
 

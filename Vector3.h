@@ -29,6 +29,10 @@ public:
     {
         return Vector3(x * scalar, y * scalar, z * scalar);
     }
+    friend Vector3 operator*(const double& scalar, const Vector3& vec)
+    {
+        return Vector3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
+    }
     Vector3 operator*(const Vector3& other) const
     {
         return Vector3(x * other.x, y * other.y, z * other.z);

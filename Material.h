@@ -12,16 +12,31 @@ public:
 class Material 
 {
 public:
+    //diffuse color
     Color albedo = Color(0,0,0,1);//diffuse color
+
+    //Emissive color
     bool isEmissive = false; //是否有自发光项
     Vector3 emissiveDistribution = Vector3(0,0,0); //自发光项颜色分布，三项分别对应波长为380nm, 520nm, 650nm的光源（波长我随便写的）
     double emissiveIntensity = 0.0; //emissive intensity
+
+    //Roughness
+    double roughness = 0.0; //粗糙度，0表示完全粗糙，1表示完全光滑
+    //Metallic
+    double metallic = 0.0; //金属度，0表示非金属，1表示金属
 public:
-    Material(Color albedo)
-        : albedo(albedo)
-    {}
-    Material(Color albedo, Vector3 emissive, double emissiveIntensity)
-        : albedo(albedo), emissiveDistribution(emissive), emissiveIntensity(emissiveIntensity)
+    Material(Color albedo, double roughness, double metallic)
+        : albedo(albedo), roughness(roughness), metallic(metallic)
+    {
+        roughness = roughness < 0.0? 0.0 : roughness;
+        roughness = roughness > 1.0? 1.0 : roughness;
+        metallic = metallic < 0.0? 0.0 : metallic;
+        metallic = metallic > 1.0? 1.0 : metallic;
+
+        albedo.Clamp();
+    }
+    Material(Vector3 emissive, double emissiveIntensity)
+        :emissiveDistribution(emissive), emissiveIntensity(emissiveIntensity)
     {
         if(emissive.x != 0&& emissive.y != 0 && emissive.z != 0)
         {
@@ -54,5 +69,8 @@ public:
     Vector3 ReflectionTerm(Vector3 x, Vector3 wo,Vector3 normal, int sampleCount,int rayDepth);
 
 private:
-    Vector3 BRDF(Vector3 x, Vector3 wo, Vector3 wi);
+    double BRDF(Vector3 x, Vector3 wo, Vector3 wi,Vector3 normal);
+    double NormalDistribution_GGX(Vector3 wi, Vector3 wo,Vector3 normal);
+    double FresnelTerm_Schlick(Vector3 wi,Vector3 normal);
+    double GeometryOcclusionTerm_Schlick(Vector3 wo,Vector3 wi,Vector3 normal);
 };

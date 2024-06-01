@@ -5,6 +5,7 @@
 #define RAY_DEPTH 10
 
 #include <cmath>
+#include <random>
 #include <memory>
 #include <vector>
 #include <iostream>

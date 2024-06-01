@@ -1,11 +1,31 @@
 
 #include "RayTracing.h"
 
+#include "Material.h"
+#include "Sphere.h"
+#include "Quad.h"
+#include "Camera.h"
+#include "Scene.h"
+
+Scene* g_Scene;
+
 int main() 
 {
     // create materials
     std::shared_ptr<Material> red = std::make_shared<Material>(
         Color(1, 0, 0,1)
+    );
+    std::shared_ptr<Material> green = std::make_shared<Material>(
+        Color(0, 1, 0,1)
+    );
+    std::shared_ptr<Material> blue = std::make_shared<Material>(
+        Color(0, 0, 1,1)
+    );
+    std::shared_ptr<Material> white = std::make_shared<Material>(
+        Color(1, 1, 1,1)
+    );
+    std::shared_ptr<Material> pink = std::make_shared<Material>(
+        Color(1, 0.5, 0.5,1)
     );
 
     // create objects
@@ -15,12 +35,20 @@ int main()
         Vector3(0.0, 0.0, 0.0),
         red
     );
+    Quad* quad1 = new Quad(
+        "Quad1",
+        Vector3(-10, -20, 0.0),// bottom left
+        Vector3(0, 500, 0),//u
+        Vector3(100, 0, 0),//v
+        pink
+    );
 
     // create scene
-    Scene* conellBoxScene = new Scene();
+    g_Scene = new Scene();
 
     // add objects to scene
-    conellBoxScene->AddObject(sphere1);
+    g_Scene->AddObject(sphere1);
+    g_Scene->AddObject(quad1);
 
     // set up camera
     Camera* camera = new Camera(
@@ -36,7 +64,7 @@ int main()
     std::ofstream outputFile("RayTracing.ppm");
     
     // render
-    camera->Render(*conellBoxScene, outputFile);
+    camera->Render(*g_Scene, outputFile);
 
     // close file
     outputFile.close();

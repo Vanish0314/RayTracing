@@ -52,33 +52,22 @@ std::shared_ptr<Ray> Camera::GetRay(int pixelIndexX,int pixelIndexY)
 /// @param scene 场景
 /// @param pixelIndex 像素索引
 /// @return 返回该像素的颜色
-Color Camera::PerPixelShading(const Ray& ray,const Scene& scene)
+Color Camera::PerPixelShading(Ray& ray,const Scene& scene)
 {
-    Hittable* nearestObject = nullptr;
-    double nearestT = -1;
-    //找到最近的相交对象
-    for(auto& obj : scene.objects)
-    {
-        HitRecord* hitRecord = obj->Hit(ray,Interval());
-        if(hitRecord->hitted)
-        {
-            if(nearestObject == nullptr || hitRecord->t < nearestT)
-            {
-                nearestObject = obj;
-                nearestT = hitRecord->t;
-            }
-        }
-    }
+    //计算辐照度
+    Vector3 radiance = ray.Trace(Interval(0.0000001f,__FLT_MAX__));
 
-    //如果没有相交对象，则返回背景颜色
-    if(nearestObject == nullptr)
-    {
-        return Color(0,0,0,1);
-    }
+    //辐照度颜色化
 
-    //计算该像素的颜色
-    Color color = nearestObject->material.get()->albedo;
-    return color;
+    //Step1:映射到颜色空间，由于暂时没有定义辐照度的光谱采样情况，这一步可以掠过(实际上什么都没干)
+    Vector3 convertedRadiance = Color:: Linear_To_SRGB(radiance);
+    //Step2:色调映射
+    Vector3 mappedRadiance = Color::ToneMapping_Reinhard(radiance);
+    //step3:伽马矫正
+    Color gammaCorrectedColor = Color::GammaCorrection(radiance,2.2f);
+
+    //返回颜色
+    return gammaCorrectedColor;
 }
 
 

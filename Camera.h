@@ -5,13 +5,10 @@
 #include <memory>
 #include <cmath>
 
+#include "RayTracing.h"
 #include "Scene.h"
-#include "Vector3.h"
-#include "Color.h"
 #include "Ray.h"
-#include "Material.h"
-
-#define PI 3.1415926535897932
+#include "Color.h"
 
 class Camera
 {
@@ -50,7 +47,7 @@ public:
 private:
 	void WriteFileHeader(std::ostream& output);
 	std::shared_ptr<Ray> GetRay(int pixelIndexX,int pixelIndexY);
-	Color PerPixelShading(const Ray& ray, const Scene& scene);
+	Color PerPixelShading(Ray& ray, const Scene& scene);
 	void WritePixelColor(std::ostream& output,Color& color);
 
 private:

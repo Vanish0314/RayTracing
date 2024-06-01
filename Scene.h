@@ -1,19 +1,18 @@
 #pragma once
 
-#include <vector>
-
+#include "RayTracing.h"
 #include "Hittable.h"
-#include "Light.h"
+#include "Ray.h"
 
 class Scene
 {
 public:
     std::vector<Hittable*> objects;
-    std::vector<Light*> lights;
 public:
     Scene();
     ~Scene();
 public:
     void AddObject(Hittable* object);
-    void AddLight(Light* light);
+public:
+    HitRecord* Hit(const Ray& ray, Interval interval) const;
 };

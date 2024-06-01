@@ -12,7 +12,7 @@ public:
     ~Sphere();
 public:
 
-HitRecord* Hit (const Ray& ray , Interval interval)
+HitRecord* Hit (const Ray& ray ,const Interval interval)
     override {
         //Create a hit record to store the hit information
         HitRecord* result = new HitRecord();

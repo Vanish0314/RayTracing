@@ -49,9 +49,9 @@ int main()
         Vector3(0.0, 0.0, 0.0),
         red
     );
-    Sphere* sphere2 = new Sphere(
+    Sphere* sphereLight = new Sphere(
         "Sphere2",
-        2,
+        5,
         Vector3(-5.0, 0.0, 0.0),
         BlueLight
     );
@@ -68,7 +68,7 @@ int main()
 
     // add objects to scene
     g_Scene->AddObject(sphere1);
-    g_Scene->AddObject(sphere2);
+    g_Scene->AddObject(sphereLight);
     g_Scene->AddObject(quad1);
 
     // set up camera

@@ -8,6 +8,7 @@
 /// @return PDF 项的值
 double PDF::SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleCount,int rayDepth)
 {
+    /*
     double pdf = 1.0 / (2 * PI);
     double phi = 2 * PI * std::rand();
     double cosTheta = 2 * std::rand() - 1;
@@ -32,6 +33,11 @@ double PDF::SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleC
     }
 
     return pdf;
+    */
+    Ray* ray = new Ray(point, Vector3::Reflect(point, Vector3(0, 0, 1)));
+    ray->depth = rayDepth - 1;
+    result.push_back(ray);
+    return 1.0;
 }
 
 Vector3 Material::Shade(const Ray& ray,int sampleCount,double u,double v,Vector3 normal)
@@ -42,7 +48,7 @@ Vector3 Material::Shade(const Ray& ray,int sampleCount,double u,double v,Vector3
     double r = ray.t;
 
     wo = EmissiveTerm(x, wo) + ReflectionTerm(x, wo,normal, sampleCount, rayDepth);
-    wo = wo/4 * PI * r * r;//光照衰减
+    wo = wo / 4 * PI * r * r;//光照衰减
     return wo;
 }
 
@@ -53,7 +59,8 @@ Vector3 Material::EmissiveTerm(Vector3 x, Vector3 wo)
 
 Vector3 Material::ReflectionTerm(Vector3 x, Vector3 wo,Vector3 normal, int sampleCount,int rayDepth)
 {
-    if (rayDepth == 0) return Vector3(0, 0, 0);
+    if (this->isEmissive) return Vector3(0, 0, 0);// 发光材质不计算反射
+    if (rayDepth == 0) return Vector3(0, 0, 0); // 光线递归深度为0，不计算反射
 
     std::vector<Ray*> rays;
     double PDF_Term = PDF::SampleHemisphere(x, rays, sampleCount, rayDepth);

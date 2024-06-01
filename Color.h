@@ -15,6 +15,6 @@ public:
 public:
     void Clamp();
 	static Vector3 Linear_To_SRGB(Vector3 radiance);
- 	static Vector3 ToneMapping_Reinhard(Vector3 convertedRadiance);
+ 	static Vector3 ToneMapping_ACES(Vector3 convertedRadiance);
 	static Color GammaCorrection(Vector3 mappedRadiance,double gamma);
 };

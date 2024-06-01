@@ -21,17 +21,32 @@ Vector3 Color::Linear_To_SRGB(Vector3 radiance)
     return srgb;
 }
 
-Vector3 Color::ToneMapping_Reinhard(Vector3 convertedRadiance)
+Vector3 Color::ToneMapping_ACES(Vector3 convertedRadiance)
 {
-    float luminance = 0.2126 * convertedRadiance.x + 0.7152 * convertedRadiance.y + 0.0722 * convertedRadiance.z;
-    float scale = 1.0 / (1.0 + luminance);
+    float a = 2.51f;
+    float b = 0.03f;
+    float c = 2.43f;
+    float d = 0.59f;
+    float e = 0.14f;
 
-    return Vector3(scale * convertedRadiance.x, scale * convertedRadiance.y, scale * convertedRadiance.z);
+    Vector3 color = convertedRadiance;
+    Vector3 result = (color * (a * color + b)) / (color * (c * color + d) + e);
+
+    return result;
 }
 
 Color Color::GammaCorrection(Vector3 mappedRadiance,double gamma)
 {
     Vector3 gammaCorrected = Vector3(pow(mappedRadiance.x, 1.0 / gamma), pow(mappedRadiance.y, 1.0 / gamma), pow(mappedRadiance.z, 1.0 / gamma));
 
-    return Color(gammaCorrected.x, gammaCorrected.y, gammaCorrected.z, 1.0);
+    gammaCorrected.x = std::max(0.0, gammaCorrected.x);
+    gammaCorrected.y = std::max(0.0, gammaCorrected.y);
+    gammaCorrected.z = std::max(0.0, gammaCorrected.z);
+    gammaCorrected.x = std::min(255.0, gammaCorrected.x);
+    gammaCorrected.y = std::min(255.0, gammaCorrected.y);
+    gammaCorrected.z = std::min(255.0, gammaCorrected.z);
+
+    Color result = Color(gammaCorrected.x, gammaCorrected.y, gammaCorrected.z, 1.0);
+    result.Clamp();
+    return result ;
 }

@@ -61,7 +61,7 @@ Color Camera::PerPixelShading(Ray& ray,const Scene& scene)
     //Step1:映射到颜色空间，由于暂时没有定义辐照度的光谱采样情况，这一步可以掠过(实际上什么都没干)
     Vector3 convertedRadiance = Color:: Linear_To_SRGB(radiance);
     //Step2:色调映射
-    Vector3 mappedRadiance = Color::ToneMapping_Reinhard(radiance);
+    Vector3 mappedRadiance = Color::ToneMapping_ACES(radiance);
     //step3:伽马矫正
     Color gammaCorrectedColor = Color::GammaCorrection(radiance,2.2f);
 

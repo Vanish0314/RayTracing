@@ -48,7 +48,6 @@ public:
     Vector3 direction;
     double  t           = -1;//在方向上行进的距离
 public:
-    Ray():origin(Vector3(0,0,0)),direction(Vector3(0,0,0)){}
     Ray(Vector3 _origin, Vector3 _direction):origin(_origin),direction(_direction){}
     ~Ray(){}
 public:

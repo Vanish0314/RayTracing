@@ -38,7 +38,7 @@ public:
     Material(Vector3 emissive, double emissiveIntensity)
         :emissiveDistribution(emissive), emissiveIntensity(emissiveIntensity)
     {
-        if(emissive.x != 0&& emissive.y != 0 && emissive.z != 0)
+        if(emissive.x != 0 || emissive.y != 0 || emissive.z != 0)
         {
             emissive = emissive.Normalized();
             isEmissive = true;

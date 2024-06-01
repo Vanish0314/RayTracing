@@ -40,8 +40,28 @@ HitRecord* Hit (const Ray& ray ,const Interval interval)
         // t = (-b +- sqrt(discriminant)) / (2*a)
         float t1 = (-b - std::sqrt(discriminant)) / (2 * a);
         float t2 = (-b + std::sqrt(discriminant)) / (2 * a);
-        if (interval.Surrounds(std::min(t1, t2))) return result;
-        result->t = std::min(t1, t2);
+
+        // FIXME:不知道为什么这里算出来t1t2是反的，但暂时先没改了
+        t1 = -t1;
+        t2 = -t2;
+
+        // 判断t是否在interval范围内
+        t1 = t1 > 0 ? t1 : 0;
+        t2 = t2 > 0 ? t2 : 0;
+        float t = std::min(t1, t2);
+        if(!interval.Surrounds(t))
+        {
+            if(interval.Surrounds(std::max(t1,t2)))
+            {
+                t = std::max(t1,t2);
+            }
+            else
+            {
+                result->hitted = false;
+                return result;
+            }
+        }
+        result->t = t;
 
         //Configure the hit record
         result->hitPoint = ray.at(result->t);

@@ -27,12 +27,23 @@ int main()
     std::shared_ptr<Material> pink = std::make_shared<Material>(
         Color(1, 0.5, 0.5,1)
     );
+    std::shared_ptr<Material> BlueLight = std::make_shared<Material>(
+        Color(0, 0,0,1),
+        Vector3(0, 0, 1),
+        100
+    );
 
     // create objects
     Sphere* sphere1 = new Sphere(
         "Sphere1",
-        2,
+        1,
         Vector3(0.0, 0.0, 0.0),
+        red
+    );
+    Sphere* sphere2 = new Sphere(
+        "Sphere2",
+        2,
+        Vector3(-5.0, 0.0, 0.0),
         red
     );
     Quad* quad1 = new Quad(
@@ -48,6 +59,7 @@ int main()
 
     // add objects to scene
     g_Scene->AddObject(sphere1);
+    g_Scene->AddObject(sphere2);
     g_Scene->AddObject(quad1);
 
     // set up camera

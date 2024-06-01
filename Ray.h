@@ -21,9 +21,9 @@ public:
     
 
 public:
-    HitRecord(bool hitted):hitted(hitted),hitPoint(Vector3(0,0,0)),normal(Vector3(0,0,0)),t(-1),u(-1),v(-1),material(nullptr),isFrontFace(false){}
-    HitRecord(bool _hitted, Vector3 _hitPoint, Vector3 _normal, double _t, double _u, double _v, Material* _material, bool _isFrontFace):hitted(_hitted),hitPoint(_hitPoint),normal(_normal),t(_t),u(_u),v(_v),material(_material),isFrontFace(_isFrontFace){}
-    HitRecord():hitted(false),hitPoint(Vector3(0,0,0)),normal(Vector3(0,0,0)),t(-1),u(-1),v(-1),material(nullptr),isFrontFace(false){}
+    HitRecord(bool hitted):hitted(hitted),hitPoint(Vector3(0,0,0)),normal(Vector3(0,0,0)),t(-1),u(-1),v(-1),isFrontFace(false),material(nullptr){}
+    HitRecord(bool _hitted, Vector3 _hitPoint, Vector3 _normal, double _t, double _u, double _v, Material* _material, bool _isFrontFace):hitted(_hitted),hitPoint(_hitPoint),normal(_normal),t(_t),u(_u),v(_v),isFrontFace(_isFrontFace),material(_material){}
+    HitRecord():hitted(false),hitPoint(Vector3(0,0,0)),normal(Vector3(0,0,0)),t(-1),u(-1),v(-1),isFrontFace(false),material(nullptr){}
     ~HitRecord(){}
 };
 

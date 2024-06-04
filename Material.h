@@ -6,7 +6,7 @@
 
 class PDF{
 public:
-    static double SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleCount,int rayDepth);
+    static double SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleCount,int rayDepth,Vector3 normal);
 };
 
 class Material 
@@ -38,13 +38,24 @@ public:
     Material(Vector3 emissive, double emissiveIntensity)
         :emissiveDistribution(emissive), emissiveIntensity(emissiveIntensity)
     {
-        if(emissive.x != 0 || emissive.y != 0 || emissive.z != 0)
+        if(emissiveDistribution.x == 0 && emissiveDistribution.y == 0 && emissiveDistribution.z == 0)
         {
-            emissive = emissive.Normalized();
-            isEmissive = true;
+            emissiveDistribution.x = (double)1/3;emissiveDistribution.y =  (double)1/3;emissiveDistribution.z =  (double)1/3;
         }
+        else
+        {
+            double t = emissiveDistribution.x + emissiveDistribution.y + emissiveDistribution.z;
+            emissiveDistribution.x = emissiveDistribution.x / t;
+            emissiveDistribution.y = emissiveDistribution.y / t;
+            emissiveDistribution.z = emissiveDistribution.z / t;
+        }
+        isEmissive = true;
     }
     ~Material(){}
+public:
+    Vector3 Shade_Lambert(const Ray& ray,double u,double v,Vector3 normal,Vector3 point);
+private:
+
 public:
     
     /// @brief 计算光线与材质的交点处的颜色,基于物理的渲染模型,使用Cook-Torrance BRDF模型,PDF为常数
@@ -53,7 +64,7 @@ public:
     /// @param sampleCount PDF采样次数
     /// @param r 光线传播距离
     /// @return 光线起点在wo方向上的inradiance
-    Vector3 Shade(const Ray& ray,int sampleCount,double u,double v,Vector3 normal);
+    Vector3 Shade_PBS(const Ray& ray,int sampleCount,double u,double v,Vector3 normal);
 
     /// @brief 渲染方程中的自发光项
     /// @param x 世界坐标系下的光线交点

@@ -10,6 +10,10 @@ Scene::~Scene()
 void Scene::AddObject(Hittable* obj)
 {
 	objects.push_back(obj);
+	if(obj->material.get()->isEmissive){
+		lights.push_back(obj);
+	}
+	else hittables.push_back(obj);
 }
 
 HitRecord* Scene::Hit(const Ray& ray, Interval interval) const{
@@ -25,6 +29,6 @@ HitRecord* Scene::Hit(const Ray& ray, Interval interval) const{
 		}
 	}
 	if(result == nullptr) result = new HitRecord(false);
-
+	//else std::cout << "Hit object: " << result->obj->name << std::endl;
 	return result;
 }

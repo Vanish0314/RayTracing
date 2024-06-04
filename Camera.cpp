@@ -7,12 +7,17 @@ void Camera::Render(const Scene& scene,std::ostream& output)
     WriteFileHeader(output);
     
     Color color = Color(0,0,0,1);
+
+    double progress = 0;
     //逐像素渲染,从左到右，从上到下
     for(int y=0;y<imageHeight;y++)
     {
-        //输出进度
-        std::cout<<"正在渲染第"<<y+1<<"行剩余"<<imageHeight-y-1<<"行..."<<std::endl;
-
+        if(y - progress > 100)
+        {
+            progress = y;
+            progress = progress * 100 / imageHeight;
+            std::cout<<"渲染进度:"<<progress<<"%"<<std::endl;
+        }
         for(int x=0;x<imageWidth;x++)
         {
 
@@ -53,8 +58,20 @@ std::shared_ptr<Ray> Camera::GetRay(int pixelIndexX,int pixelIndexY)
 /// @return 返回该像素的颜色
 Color Camera::PerPixelShading(Ray& ray,const Scene& scene)
 {
+    Vector3 radiance;
     //计算辐照度
-    Vector3 radiance = ray.Trace(Interval(0.0000001f,__FLT_MAX__));
+    switch (mode)
+    {
+    case RenderMode::PBR:
+        radiance = ray.Trace_PBR(Interval(0.0000001f,__FLT_MAX__));
+        break;
+    case RenderMode::Lambertian:
+        radiance = ray.Trace_Lambert(Interval(0.0000001f,__FLT_MAX__));
+        break;
+    default:
+        break;
+    }
+    
 
     //辐照度颜色化
 

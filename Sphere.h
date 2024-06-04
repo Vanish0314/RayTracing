@@ -65,11 +65,12 @@ HitRecord* Hit (const Ray& ray ,const Interval interval)
 
         //Configure the hit record
         result->hitPoint = ray.at(result->t);
-        result->normal = (result->hitPoint - position) / radius;
+        result->normal = (result->hitPoint - position).Normalized();
         result->material = material;
         result->isFrontFace = (ray.direction.Dot(result->normal) < 0);
         result->u = GetUAt(result->hitPoint);
         result->v = GetVAt(result->hitPoint);
+        result->obj = this;
 
         return result;
     }

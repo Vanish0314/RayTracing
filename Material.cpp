@@ -6,41 +6,62 @@
 /// @param sampleCount 需要的光线数量
 /// @param rayDepth 光线递归深度
 /// @return PDF 项的值
-double PDF::SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleCount,int rayDepth)
+double PDF::SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleCount,int rayDepth,Vector3 normal)
 {
-    /*
-    double pdf = 1.0 / (2 * PI);
-    double phi = 2 * PI * std::rand();
-    double cosTheta = 2 * std::rand() - 1;
-    double sinTheta = std::sqrt(1 - cosTheta * cosTheta);
-
-    Vector3 w = Vector3(sinTheta * std::cos(phi), sinTheta * std::sin(phi), cosTheta);
-    Vector3 u = Vector3::Cross(Vector3(0, 1, 0), w).Normalized();
-    Vector3 v = Vector3::Cross(w, u);
-
     for (int i = 0; i < sampleCount; i++)
     {
-        double r1 = std::rand();
-        double r2 = std::rand();
-        double x = std::sqrt(r1) * std::cos(2 * PI * r2);
-        double y = std::sqrt(r1) * std::sin(2 * PI * r2);
-        double z = std::sqrt(1 - r1);
-
-        Vector3 direction = x * u + y * v + z * w;
-        Ray* ray = new Ray(point, direction);
-        ray->depth = rayDepth - 1;
+        Vector3 randomVec = Vector3::RandomInHemisphere(normal);
+        Ray* ray = new Ray(point, randomVec);
+        ray->depth = rayDepth -1;
         result.push_back(ray);
     }
-
-    return pdf;
-    */
-    Ray* ray = new Ray(point, Vector3::Reflect(point, Vector3(0, 0, 1)));
-    ray->depth = rayDepth - 1;
-    result.push_back(ray);
-    return 1.0;
+    
+    double PDF_Term = 1 / (2 * PI);
+    return PDF_Term;
 }
 
-Vector3 Material::Shade(const Ray& ray,int sampleCount,double u,double v,Vector3 normal)
+Vector3 Material::Shade_Lambert(const Ray& ray,double u,double v,Vector3 normal,Vector3 point)
+{
+    if(ray.depth == 0) return Vector3(0,0,0); // 光线递归深度为0，不计算反射
+
+    Vector3 result = Vector3(0, 0, 0);
+
+    /*
+    for(auto light : g_Scene->lights)
+    {
+        double cos = Vector3::Dot(normal, (light->position - point).Normalized());
+        double kd = metallic;
+        Vector3 Il = light->material.get()->emissiveDistribution * light->material.get()->emissiveIntensity;
+
+        Vector3 I = kd * Il * std::max(cos, 0.0);
+
+        result += I;
+    }
+
+    result = Vector3(
+        result.x * albedo.r,
+        result.y * albedo.g,
+        result.z * albedo.b
+    );
+    */
+
+    if(isEmissive) 
+    {
+        result = EmissiveTerm(point, Vector3(0,0,0)-ray.direction);
+        double r = ray.t;
+        result = result / (4.0 * PI * r * r);
+        return result;
+    }
+    else
+    {
+        Ray* newRay = new Ray(ray.at(ray.t), Vector3::Reflect(ray.direction, normal));
+        newRay->depth = ray.depth - 1;
+        return newRay->Trace_Lambert(Interval(0.00001f, __FLT_MAX__));
+    }
+}
+
+
+Vector3 Material::Shade_PBS(const Ray& ray,int sampleCount,double u,double v,Vector3 normal)
 {
     Vector3 x = ray.at(ray.t);
     Vector3 wo = Vector3(0, 0, 0) - ray.direction;
@@ -48,7 +69,7 @@ Vector3 Material::Shade(const Ray& ray,int sampleCount,double u,double v,Vector3
     double r = ray.t;
 
     wo = EmissiveTerm(x, wo) + ReflectionTerm(x, wo,normal, sampleCount, rayDepth);
-    wo = wo / 4 * PI * r * r;//光照衰减
+    wo = wo / (4.0 * PI * r * r);//光照衰减
     return wo;
 }
 
@@ -63,7 +84,7 @@ Vector3 Material::ReflectionTerm(Vector3 x, Vector3 wo,Vector3 normal, int sampl
     if (rayDepth == 0) return Vector3(0, 0, 0); // 光线递归深度为0，不计算反射
 
     std::vector<Ray*> rays;
-    double PDF_Term = PDF::SampleHemisphere(x, rays, sampleCount, rayDepth);
+    double PDF_Term = PDF::SampleHemisphere(x, rays, sampleCount, rayDepth,normal);
 
     Vector3 result = Vector3(0, 0, 0);
     for (int i = 0; i < rays.size(); i++)
@@ -73,7 +94,7 @@ Vector3 Material::ReflectionTerm(Vector3 x, Vector3 wo,Vector3 normal, int sampl
         Vector3 wi = Vector3(0,0,0)-(ray->direction);
 
         double BRDF_Term = BRDF(x, wo, wi,normal);
-        Vector3 Li_Term = ray->Trace(Interval(0.00001f,__FLT_MAX__));
+        Vector3 Li_Term = ray->Trace_PBR(Interval(0.00001f,__FLT_MAX__));
         double  Cos_Term = std::max(0.0, Vector3::Dot(wi, normal));
 
         result += BRDF_Term * Li_Term * Cos_Term / PDF_Term;

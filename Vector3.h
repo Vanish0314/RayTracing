@@ -130,7 +130,7 @@ public:
 
     static Vector3 Random()
     {
-        return Vector3(rand() / (double)RAND_MAX, rand() / (double)RAND_MAX, rand() / (double)RAND_MAX);
+        return Vector3(2 * (rand() / (double)RAND_MAX, rand()) -1.0 , 2 * (rand() / (double)RAND_MAX, rand()) -1.0, 2 * (rand() / (double)RAND_MAX, rand()) -1.0);
     }
 
 
@@ -138,6 +138,27 @@ public:
     {
         Vector3 v = Random();
         v.Normalize();
+        return v;
+    }
+
+    static Vector3 RandomInUnitDisk()
+    {
+        Vector3 v = Vector3(rand() / (double)RAND_MAX, rand() / (double)RAND_MAX, 0);
+        while (v.Magnitude() >= 1)
+        {
+            v = Vector3(rand() / (double)RAND_MAX, rand() / (double)RAND_MAX, 0);
+        }
+        return v;
+    }
+
+
+    static Vector3 RandomInHemisphere(const Vector3& normal)
+    {
+        Vector3 v = RandomUnit();
+        if (v.Dot(normal) < 0)
+        {
+            v = Vector3(0,0,0)-v;
+        }
         return v;
     }
 

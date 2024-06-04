@@ -1,7 +1,7 @@
 #pragma once
 
 #define PI 3.1415926535897932
-#define PDF_SAMPLE_COUNT 1
+#define PDF_SAMPLE_COUNT 20
 #define RAY_DEPTH 10
 
 #include <cmath>

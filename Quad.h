@@ -15,7 +15,7 @@ public:
     Quad(std::string name,const Vector3 startPoint,const Vector3 u,const Vector3 v,std::shared_ptr<Material> material):
         Hittable(name,startPoint,material),u(u),v(v)
         {
-            auto n = u.Cross(v);
+            Vector3 n = u.Cross(v);
             normal = n.Normalized();
             D = normal.Dot(startPoint); // 计算平面方程的常数项
             w = n/n.Dot(n); // 计算法向量
@@ -24,12 +24,13 @@ public:
 public:
     HitRecord* Hit(const Ray& ray ,const Interval interval) override
     {
+
         HitRecord* hitRecord = new HitRecord();
 
         // Ray-Quad intersection algorithm
         // 第零步，平行说明不相交
-        float dotProduct = std::abs(ray.direction.Dot(normal));
-        if (dotProduct < 1e-6)// 1e-6是个极小数，表示平行的阈值
+        float dotProduct = ray.direction.Dot(normal);
+        if (std::abs(dotProduct < 1e-6))// 1e-6是个极小数，表示平行的阈值
         {
             hitRecord->hitted = false;
             return hitRecord;
@@ -57,7 +58,8 @@ public:
         hitRecord->hitPoint = intersectionPoint;
         hitRecord->isFrontFace = dotProduct < 0;
         hitRecord->material = material;
-        
+        hitRecord->obj = this;
+
         return hitRecord;
     }
 private:

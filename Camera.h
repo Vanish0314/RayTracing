@@ -10,6 +10,12 @@
 #include "Ray.h"
 #include "Color.h"
 
+enum RenderMode
+{
+	PBR,
+	Lambertian
+};
+
 class Camera
 {
 public:
@@ -20,9 +26,11 @@ public:
 	uint16_t imageWidth, imageHeight;
 	float    fov;// 垂直FOV
 
+	RenderMode mode = RenderMode::PBR;
+
 public:
-	Camera(Vector3 position, Vector3 direction, Vector3 up,int imageWidth, int imageHeight, float fov)
-		: m_position(position), m_direction(direction), m_up(up), imageWidth(imageWidth), imageHeight(imageHeight), fov(fov) 
+	Camera(Vector3 position, Vector3 direction, Vector3 up,int imageWidth, int imageHeight, float fov,RenderMode mode = RenderMode::PBR)
+		: m_position(position), m_direction(direction), m_up(up), imageWidth(imageWidth), imageHeight(imageHeight), fov(fov) , mode(mode)
 		{
 			// 计算ViewPort
 			double theta = fov * PI / 180.0; // 视角角度
@@ -57,4 +65,5 @@ private:
 	double nearZ = 1.0; // 近裁剪面
 
 	Color backgroundColor = Color(1,1,1,1); // 背景颜色
+
 };

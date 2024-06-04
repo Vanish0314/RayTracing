@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "Sphere.h"
 #include "Quad.h"
+#include "Box.h"
 #include "Camera.h"
 #include "Scene.h"
 
@@ -24,61 +25,105 @@ int main()
     );
     std::shared_ptr<Material> blue = std::make_shared<Material>(
         Color(0, 0, 1,1),
-        0,
-        1
+        0.5,
+        0.5
     );
     std::shared_ptr<Material> white = std::make_shared<Material>(
         Color(1, 1, 1,1),
-        0.7,
-        0.45
+        0.5,
+        0.5
     );
-    std::shared_ptr<Material> pink = std::make_shared<Material>(
-        Color(1, 0.5, 0.5,1),
-        0.2,
-        0.7
-    );
-    std::shared_ptr<Material> BlueLight = std::make_shared<Material>(
-        Vector3(0, 0, 1),
+    std::shared_ptr<Material> WhiteLight = std::make_shared<Material>(
+        Vector3(0,0,0),
         100
     );
 
     // create objects
-    Sphere* sphere1 = new Sphere(
-        "Sphere1",
-        1,
-        Vector3(0.0, 0.0, 0.0),
+
+    //Cornell Box Sides
+    Quad* GreenWall = new Quad(
+        "GreenWall",
+        Vector3(555.0,0.0,0.0),
+        Vector3(0,0,555),
+        Vector3(0,555,0),
+        green
+    );
+    Quad* RedWall = new Quad(
+        "RedWall",
+        Vector3(0.0,0.0,555.0),
+        Vector3(0,0,-555),
+        Vector3(0,555,0),
         red
     );
-    Sphere* sphereLight = new Sphere(
-        "Sphere2",
-        5,
-        Vector3(-5.0, 0.0, 0.0),
-        BlueLight
+    Quad* WhiteWall = new Quad(
+        "WhiteWall",
+        Vector3(0.0,555.0,0.0),
+        Vector3(555,0,0),
+        Vector3(0,0,555),
+        white
     );
-    Quad* quad1 = new Quad(
-        "Quad1",
-        Vector3(-10, -20, 0.0),// bottom left
-        Vector3(0, 500, 0),//u
-        Vector3(100, 0, 0),//v
-        pink
+    Quad* WhiteWall2 = new Quad(
+        "WhiteWall2",
+        Vector3(0,0,555),
+        Vector3(555,0,0),
+        Vector3(0,0,-555),
+        white
+    );
+    Quad* WhiteWall3 = new Quad(
+        "WhiteWall3",
+        Vector3(555,0,555),
+        Vector3(-555,0,0),
+        Vector3(0,555,0),
+        white
+    );
+
+    //Box
+    // Box* WhiteBox = new Box(
+    //     "WhiteBox",
+    //     Vector3(0,0,0),
+    //     Vector3(165,330,165),
+    //     white
+    // );
+
+    //Sphere
+    Sphere* GlassSphere = new Sphere(
+        "GlassSphere",
+        165,
+        Vector3(190,90,190),
+        blue
+    );
+
+    // add lights to scene
+    Quad* Light = new Quad(
+        "Light",
+        Vector3(343,554,332),
+        Vector3(-130,0,0),
+        Vector3(0,0,-105),
+        WhiteLight
     );
 
     // create scene
     g_Scene = new Scene();
 
     // add objects to scene
-    g_Scene->AddObject(sphere1);
-    g_Scene->AddObject(sphereLight);
-    g_Scene->AddObject(quad1);
+    g_Scene->AddObject(GreenWall);
+    g_Scene->AddObject(RedWall);
+    g_Scene->AddObject(WhiteWall);
+    g_Scene->AddObject(WhiteWall2);
+    g_Scene->AddObject(WhiteWall3);
+    // g_Scene->AddObject(WhiteBox);
+    g_Scene->AddObject(GlassSphere);
+    g_Scene->AddObject(Light);
 
     // set up camera
     Camera* camera = new Camera(
-        Vector3(0.0, 0.0, -5 ),
-        Vector3(0.0, 0.0, 1.0),
-        Vector3(0.0, 1.0, 0.0),
+        Vector3(0, 0, -800),
+        Vector3(0, 0, 1   ),
+        Vector3(0.0, 1.0, 0.0 ),
         1920,
         1080,
-        120
+        120,
+        RenderMode::Lambertian
     );
 
     // creat ppm image file

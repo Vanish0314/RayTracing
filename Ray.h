@@ -18,11 +18,12 @@ public:
     double    v;//纹理坐标v
     bool      isFrontFace;//是否是正面
     std::shared_ptr<Material> material;//材质
+    Hittable* obj; //击中的物体
     
 
 public:
     HitRecord(bool hitted):hitted(hitted),hitPoint(Vector3(0,0,0)),normal(Vector3(0,0,0)),t(-1),u(-1),v(-1),isFrontFace(false),material(nullptr){}
-    HitRecord(bool _hitted, Vector3 _hitPoint, Vector3 _normal, double _t, double _u, double _v, Material* _material, bool _isFrontFace):hitted(_hitted),hitPoint(_hitPoint),normal(_normal),t(_t),u(_u),v(_v),isFrontFace(_isFrontFace),material(_material){}
+    HitRecord(bool _hitted, Vector3 _hitPoint, Vector3 _normal, double _t, double _u, double _v, std::shared_ptr<Material> _material,Hittable* obj,bool _isFrontFace):hitted(_hitted),hitPoint(_hitPoint),normal(_normal),t(_t),u(_u),v(_v),isFrontFace(_isFrontFace),material(_material),obj(obj){}
     HitRecord():hitted(false),hitPoint(Vector3(0,0,0)),normal(Vector3(0,0,0)),t(-1),u(-1),v(-1),isFrontFace(false),material(nullptr){}
     ~HitRecord(){}
 };
@@ -56,5 +57,6 @@ public:
     /// @brief 返回光线结果
     /// @param interval 
     /// @return 
-    Vector3 Trace(Interval interval);
+    Vector3 Trace_PBR(Interval interval);
+    Vector3 Trace_Lambert(Interval interval);
 };

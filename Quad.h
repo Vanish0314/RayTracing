@@ -7,9 +7,8 @@ class Quad :public Hittable
 {
 public:
     Vector3 u,v;
-    Vector3 normal;
+    Vector3 normal; 
     double D;
-    Vector3 w;
 
 public:
     Quad(std::string name,const Vector3 startPoint,const Vector3 u,const Vector3 v,std::shared_ptr<Material> material):
@@ -18,7 +17,6 @@ public:
             Vector3 n = u.Cross(v);
             normal = n.Normalized();
             D = normal.Dot(startPoint); // 计算平面方程的常数项
-            w = n/n.Dot(n); // 计算法向量
         }
     ~Quad();
 public:
@@ -30,21 +28,20 @@ public:
         // Ray-Quad intersection algorithm
         // 第零步，平行说明不相交
         float dotProduct = ray.direction.Dot(normal);
-        if (std::abs(dotProduct < 1e-6))// 1e-6是个极小数，表示平行的阈值
+        if (std::abs(dotProduct) < 1e-6)// 1e-6是个极小数，表示平行的阈值
         {
             hitRecord->hitted = false;
             return hitRecord;
         }
-        // 第一步，求包含四边形的平面方程
+
+        // 第一步，求射线与平面的交点
         double t = (D - ray.origin.Dot(normal)) / dotProduct;
         if(!interval.Surrounds(t)){
             hitRecord->hitted = false;
             return hitRecord;
         }
 
-        // 第二布，判断光线是否与平面相交
-
-        // 第三步，判断交点是否在四边形内
+        // 第二步，判断交点是否在四边形内
         Vector3 intersectionPoint = ray.at(t);
         isInterior(intersectionPoint,hitRecord);
         if(!hitRecord->hitted)
@@ -60,6 +57,8 @@ public:
         hitRecord->material = material;
         hitRecord->obj = this;
 
+        //if(hitRecord->material.get()->isEmissive) std::cout<<"光源被采样"<<std::endl;
+
         return hitRecord;
     }
 private:
@@ -67,8 +66,8 @@ private:
     {
         // 判断点是否在四边形内
         Vector3 planar_HitPoint = point - position;
-        double alpha = Vector3::Dot(w,Vector3::Cross(planar_HitPoint,v));
-        double beta = Vector3::Dot(w,Vector3::Cross(u,planar_HitPoint));
+        double alpha = Vector3::Dot(planar_HitPoint,u)/u.Dot(u);
+        double beta = Vector3::Dot(planar_HitPoint,v)/v.Dot(v);
 
         Interval interval = Interval(0,1);
         if(!interval.Surrounds(alpha) || !interval.Surrounds(beta)){

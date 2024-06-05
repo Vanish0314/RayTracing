@@ -26,6 +26,7 @@ void Camera::Render(const Scene& scene,std::ostream& output)
             WritePixelColor(output,color);
 
             color = Color(0,0,0,1);
+            ray.reset();
         }
     }
     std::cout<<"渲染完成"<<std::endl;

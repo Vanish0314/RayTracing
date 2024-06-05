@@ -35,7 +35,7 @@ int main()
     );
     std::shared_ptr<Material> WhiteLight = std::make_shared<Material>(
         Vector3(0,0,0),
-        100
+        1000000000
     );
 
     // create objects
@@ -117,7 +117,7 @@ int main()
 
     // set up camera
     Camera* camera = new Camera(
-        Vector3(0, 0, -800),
+        Vector3(280, 100, -800),
         Vector3(0, 0, 1   ),
         Vector3(0.0, 1.0, 0.0 ),
         1920,
@@ -134,5 +134,7 @@ int main()
 
     // close file
     outputFile.close();
+
+    return 0;
 }
 

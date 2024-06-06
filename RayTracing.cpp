@@ -13,23 +13,27 @@ Scene* g_Scene;
 int main() 
 {
     // create materials
-    std::shared_ptr<Material_Lambert> red_Lambert = std::make_shared<Material_Lambert>(
+    std::shared_ptr<Material_BlinnPhong> red_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(1, 0, 0,1),
+        0.5,
         0.5
     );
-    std::shared_ptr<Material_Lambert> green_Lambert = std::make_shared<Material_Lambert>(
+    std::shared_ptr<Material_BlinnPhong> green_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(0, 1, 0,1),
-        1.0
+        1.0,
+        0
     );
-    std::shared_ptr<Material_Lambert> blue_Lambert = std::make_shared<Material_Lambert>(
+    std::shared_ptr<Material_BlinnPhong> blue_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(0, 0, 1,1),
+        0.5,
         0.5
     );
-    std::shared_ptr<Material_Lambert> white_Lambert = std::make_shared<Material_Lambert>(
+    std::shared_ptr<Material_BlinnPhong> white_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(1, 1, 1,1),
+        0.5,
         0.5
     );
-    std::shared_ptr<Material_Lambert> WhiteLight_Lambert = std::make_shared<Material_Lambert>(
+    std::shared_ptr<Material_BlinnPhong> WhiteLight_Lambert = std::make_shared<Material_BlinnPhong>(
         Vector3(0,0,0),
         1000000000
     );

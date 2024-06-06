@@ -40,8 +40,9 @@ public:
 			Vector3 term3 = w * nearZ;
 		    pixel_00_Location = term1 + term2 + term3;
 
-			pixelDeltaX = u * viewportWidth / (double)imageWidth; // 视角坐标系每一个像素x方向的大小
-			pixelDeltaY = v * viewportHeight / (double)imageHeight; // 视角坐标系每一个像素y方向的大小
+			Vector3 pixelDeltaX = u * (viewportWidth / static_cast<double>(imageWidth)); // 视角坐标系每一个像素x方向的大小
+			Vector3 pixelDeltaY = v * (viewportHeight / static_cast<double>(imageHeight)); // 视角坐标系每一个像素y方向的大小
+	
 		}
 	~Camera() {}
 
@@ -60,6 +61,7 @@ private:
 	Vector3 pixelDeltaX, pixelDeltaY; // 视角坐标系每一个像素的大小
 	double nearZ = 1.0; // 近裁剪面
 
-	Color backgroundColor = Color(1,1,1,1); // 背景颜色
+public:
+	
 
 };

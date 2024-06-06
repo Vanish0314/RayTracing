@@ -20,63 +20,39 @@ double PDF::SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleC
     return PDF_Term;
 }
 
-
-
-
-
-Vector3 Material_Lambert::Shade(Ray& ray_In, HitRecord& hitRecord)
+Vector3 Material::RadianceColorful(Vector3 radiance)
 {
-    Vector3 normal = hitRecord.normal;
-    Vector3 point = hitRecord.hitPoint;
+    double radiusIntencity = radiance.Magnitude();
+        radiance.x = radiance.x / radiusIntencity;
+        radiance.y = radiance.y / radiusIntencity;
+        radiance.z = radiance.z / radiusIntencity;
+        radiance.x = radiance.x * albedo.r;
+        radiance.y = radiance.y * albedo.g;
+        radiance.z = radiance.z * albedo.b;
+        radiance   = radiance * radiusIntencity;
 
-    // 在这里实现 Material_Lambert 类中的 Shade 函数
-    if(ray_In.depth == 0) 
-    {
-        for(auto light : g_Scene->lights)
-        {
-            double t = (ray_In.origin - light->position).Magnitude();
-            Vector3 l = light->material.get()->EmissiveTerm(point, Vector3(0,0,0)-ray_In.direction);
-            l = l / Vector3(4.0*PI*t*t);
-
-        }
-    }
-
-    Vector3 result = Vector3(0, 0, 0);
-
-    if(isEmissive)
-    {
-        result = EmissiveTerm(point, Vector3(0,0,0)-ray_In.direction);
-        double r = ray_In.t;
-        result = result / (4.0 * PI * r * r);
-        return result;
-    }
-    else
-    {
-        Vector3 from = ray_In.at(ray_In.t) + normal * 0.000001;
-        Vector3 to = Vector3::Reflect(ray_In.direction, normal);
-        Ray* newRay = new Ray(from, to);
-        newRay->depth = ray_In.depth - 1;
-
-        Vector3 result = newRay->Trace(Interval(0.00001f, __FLT_MAX__));
-        double radiusIntencity = result.Magnitude();
-        result.x = result.x / radiusIntencity;
-        result.y = result.y / radiusIntencity;
-        result.z = result.z / radiusIntencity;
-        result.x = result.x * albedo.r;
-        result.y = result.y * albedo.g;
-        result.z = result.z * albedo.b;
-        result   = result * radiusIntencity;
-
-        return result;
-    }
+    return radiance;
 }
 
-Vector3 Material_Lambert::EmissiveTerm(Vector3 point, Vector3 direction)
+
+
+
+Vector3 Material_BlinnPhong::Shade(Ray& ray_In, HitRecord& hitRecord)
+{
+
+    Vector3 I_Ambient = Vector3(0, 0, 0);
+    Vector3 I_Diffuse = Vector3(0, 0, 0);
+    Vector3 I_Specular = Vector3(0, 0, 0);
+
+    I
+}
+
+Vector3 Material_BlinnPhong::EmissiveTerm(Vector3 point, Vector3 direction)
 {
     //TODO: 实现 Material_Lambert 类中的 EmissiveTerm 函数
     return Vector3(0, 0, 0);
 }
-Vector3 Material_Lambert::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
+Vector3 Material_BlinnPhong::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
 {
     //TODO: 实现 Material_Lambert 类中的 ReflectionTerm 函数
     return Vector3(0, 0, 0);

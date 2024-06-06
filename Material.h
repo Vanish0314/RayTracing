@@ -59,26 +59,31 @@ public:
     /// @param scatterRecord 散射的信息与设置
     /// @return 返回wo方向上计算了光照衰减（根据t）后的radiance
     virtual Vector3 ReflectionTerm(Ray& ray_In, HitRecord& hitRecord) = 0;
+protected:
+    Vector3 RadianceColorful(Vector3 radiance);
 };
 
-class Material_Lambert : public Material
+class Material_BlinnPhong : public Material
 {
 public:
     double kd = 0.0; //漫反射系数
+    double ks = 0.0; //镜面反射系数
 public:
-    Material_Lambert(Color albedo, double kd)
-        : Material(albedo), kd(kd)
+    Material_BlinnPhong(Color albedo, double kd,double ks)
+        : Material(albedo), kd(kd), ks(ks)
     {
         kd = kd < 0.0? 0.0 : kd;
         kd = kd > 1.0 ? 1.0 : kd;
+        ks = ks < 0.0? 0.0 : ks;
+        ks = ks > 1.0 ? 1.0 : ks;
         albedo.Clamp();
     }
-    Material_Lambert(Vector3 emissiveDistribution, double emissiveIntensity)
+    Material_BlinnPhong(Vector3 emissiveDistribution, double emissiveIntensity)
         : Material(emissiveDistribution, emissiveIntensity)
     {
         isEmissive = true;
     }
-    ~Material_Lambert() {}
+    ~Material_BlinnPhong() {}
 public:
     Vector3 Shade(Ray& ray_In, HitRecord& hitRecord) override;
     Vector3 EmissiveTerm(Vector3 wo , Vector3 point) override;

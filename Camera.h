@@ -10,12 +10,6 @@
 #include "Ray.h"
 #include "Color.h"
 
-enum RenderMode
-{
-	PBR,
-	Lambertian
-};
-
 class Camera
 {
 public:
@@ -26,11 +20,9 @@ public:
 	uint16_t imageWidth, imageHeight;
 	float    fov;// 垂直FOV
 
-	RenderMode mode = RenderMode::PBR;
-
 public:
-	Camera(Vector3 position, Vector3 direction, Vector3 up,int imageWidth, int imageHeight, float fov,RenderMode mode = RenderMode::PBR)
-		: m_position(position), m_direction(direction), m_up(up), imageWidth(imageWidth), imageHeight(imageHeight), fov(fov) , mode(mode)
+	Camera(Vector3 position, Vector3 direction, Vector3 up,int imageWidth, int imageHeight, float fov)
+		: m_position(position), m_direction(direction), m_up(up), imageWidth(imageWidth), imageHeight(imageHeight), fov(fov)
 		{
 			// 计算ViewPort
 			double theta = fov * PI / 180.0; // 视角角度
@@ -43,7 +35,11 @@ public:
 			v = w.Cross(u); // 下侧方向
 
 			//计算视角坐标系原点
-			pixel_00_Location = m_position - u * viewportWidth / 2.0 + v * viewportHeight / 2.0 + w * nearZ; // 视角坐标系原点
+			Vector3 term1 = m_position - u * (viewportWidth / 2.0);
+			Vector3 term2 = v * (viewportHeight / 2.0);
+			Vector3 term3 = w * nearZ;
+		    pixel_00_Location = term1 + term2 + term3;
+
 			pixelDeltaX = u * viewportWidth / (double)imageWidth; // 视角坐标系每一个像素x方向的大小
 			pixelDeltaY = v * viewportHeight / (double)imageHeight; // 视角坐标系每一个像素y方向的大小
 		}

@@ -13,27 +13,23 @@ Scene* g_Scene;
 int main() 
 {
     // create materials
-    std::shared_ptr<Material> red = std::make_shared<Material>(
+    std::shared_ptr<Material_Lambert> red_Lambert = std::make_shared<Material_Lambert>(
         Color(1, 0, 0,1),
-        0.5,
-        1
+        0.5
     );
-    std::shared_ptr<Material> green = std::make_shared<Material>(
+    std::shared_ptr<Material_Lambert> green_Lambert = std::make_shared<Material_Lambert>(
         Color(0, 1, 0,1),
-        1,
-        0.2
+        1.0
     );
-    std::shared_ptr<Material> blue = std::make_shared<Material>(
+    std::shared_ptr<Material_Lambert> blue_Lambert = std::make_shared<Material_Lambert>(
         Color(0, 0, 1,1),
-        0.5,
         0.5
     );
-    std::shared_ptr<Material> white = std::make_shared<Material>(
+    std::shared_ptr<Material_Lambert> white_Lambert = std::make_shared<Material_Lambert>(
         Color(1, 1, 1,1),
-        0.5,
         0.5
     );
-    std::shared_ptr<Material> WhiteLight = std::make_shared<Material>(
+    std::shared_ptr<Material_Lambert> WhiteLight_Lambert = std::make_shared<Material_Lambert>(
         Vector3(0,0,0),
         1000000000
     );
@@ -46,35 +42,35 @@ int main()
         Vector3(555.0,0.0,0.0),
         Vector3(0,0,555),
         Vector3(0,555,0),
-        green
+        green_Lambert
     );
     Quad* RedWall = new Quad(
         "RedWall",
         Vector3(0.0,0.0,555.0),
         Vector3(0,0,-555),
         Vector3(0,555,0),
-        red
+        red_Lambert
     );
     Quad* WhiteWall = new Quad(
         "WhiteWall",
         Vector3(0.0,555.0,0.0),
         Vector3(555,0,0),
         Vector3(0,0,555),
-        white
+        white_Lambert
     );
     Quad* WhiteWall2 = new Quad(
         "WhiteWall2",
         Vector3(0,0,555),
         Vector3(555,0,0),
         Vector3(0,0,-555),
-        white
+        white_Lambert
     );
     Quad* WhiteWall3 = new Quad(
         "WhiteWall3",
         Vector3(555,0,555),
         Vector3(-555,0,0),
         Vector3(0,555,0),
-        white
+        white_Lambert
     );
 
     //Box
@@ -90,7 +86,7 @@ int main()
         "GlassSphere",
         165,
         Vector3(190,90,190),
-        blue
+        blue_Lambert
     );
 
     // add lights to scene
@@ -99,7 +95,7 @@ int main()
         Vector3(343,554,332),
         Vector3(-130,0,0),
         Vector3(0,0,-105),
-        WhiteLight
+        WhiteLight_Lambert
     );
 
     // create scene
@@ -118,13 +114,12 @@ int main()
     // set up camera
     Camera* camera = new Camera(
         Vector3(280, 100, -800),
-        Vector3(0, 0, 1   ),
-        Vector3(0.0, 1.0, 0.0 ),
+        Vector3(  0,   0,    1),
+        Vector3(0.0, 1.0,  0.0),
         1920,
         1080,
-        120,
-        RenderMode::Lambertian
-    );
+        120
+        );
 
     // creat ppm image file
     std::ofstream outputFile("RayTracing.ppm");

@@ -59,20 +59,9 @@ std::shared_ptr<Ray> Camera::GetRay(int pixelIndexX,int pixelIndexY)
 /// @return 返回该像素的颜色
 Color Camera::PerPixelShading(Ray& ray,const Scene& scene)
 {
-    Vector3 radiance;
     //计算辐照度
-    switch (mode)
-    {
-    case RenderMode::PBR:
-        radiance = ray.Trace_PBR(Interval(0.0000001f,__FLT_MAX__));
-        break;
-    case RenderMode::Lambertian:
-        radiance = ray.Trace_Lambert(Interval(0.0000001f,__FLT_MAX__));
-        break;
-    default:
-        break;
-    }
-    
+    Vector3 radiance;
+    radiance = ray.Trace(Interval());
 
     //辐照度颜色化
 

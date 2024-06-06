@@ -6,6 +6,7 @@
 #include "Vector3.h"
 #include "Material.h"
 #include "Scene.h"
+#include "RayTracing.h"
 
 class HitRecord
 {
@@ -57,6 +58,5 @@ public:
     /// @brief 返回光线结果
     /// @param interval 
     /// @return 
-    Vector3 Trace_PBR(Interval interval);
-    Vector3 Trace_Lambert(Interval interval);
+    Vector3 Trace(Interval interval);
 };

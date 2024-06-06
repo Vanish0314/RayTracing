@@ -7,14 +7,15 @@
 class Color
 {
 public:
-	double r, g, b, a = 1;
+    double r, g, b, a;
 public:
-	Color(double r = 0, double g = 0, double b = 0, double a = 1) : r(r), g(g), b(b),a(a) {}
-	Color(double r = 0, double g = 0, double b = 0) : r(r), g(g), b(b) {}
-    ~Color(){};
+	Color() : r(0), g(0), b(0), a(1) {}
+    Color(double r, double g, double b, double a = 1) : r(r), g(g), b(b), a(a) {}
+    Color(double r, double g, double b) : r(r), g(g), b(b), a(1) {}
+    ~Color() {}
 public:
     void Clamp();
 	static Vector3 Linear_To_SRGB(Vector3 radiance);
  	static Vector3 ToneMapping_ACES(Vector3 convertedRadiance);
-	static Color GammaCorrection(Vector3 mappedRadiance,double gamma);
+	static Color GammaCorrection(Vector3 mappedRadiance, double gamma);
 };

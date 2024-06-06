@@ -20,54 +20,44 @@ double PDF::SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleC
     return PDF_Term;
 }
 
-Vector3 Material::Shade_Lambert(const Ray& ray,double u,double v,Vector3 normal,Vector3 point)
+
+
+
+
+Vector3 Material_Lambert::Shade(Ray& ray_In, HitRecord& hitRecord)
 {
-    if(ray.depth == 0) 
+    Vector3 normal = hitRecord.normal;
+    Vector3 point = hitRecord.hitPoint;
+
+    // 在这里实现 Material_Lambert 类中的 Shade 函数
+    if(ray_In.depth == 0) 
     {
         for(auto light : g_Scene->lights)
         {
-            double t = (ray.origin - light->position).Magnitude();
-            Vector3 l = light->material.get()->EmissiveTerm(Vector3(0,0,0),Vector3(0,0,0));
-            l = l/(4.0*PI*t*t);
+            double t = (ray_In.origin - light->position).Magnitude();
+            Vector3 l = light->material.get()->EmissiveTerm(point, Vector3(0,0,0)-ray_In.direction);
+            l = l / Vector3(4.0*PI*t*t);
+
         }
     }
 
     Vector3 result = Vector3(0, 0, 0);
 
-    /*
-    for(auto light : g_Scene->lights)
-    {
-        double cos = Vector3::Dot(normal, (light->position - point).Normalized());
-        double kd = metallic;
-        Vector3 Il = light->material.get()->emissiveDistribution * light->material.get()->emissiveIntensity;
-
-        Vector3 I = kd * Il * std::max(cos, 0.0);
-
-        result += I;
-    }
-
-    result = Vector3(
-        result.x * albedo.r,
-        result.y * albedo.g,
-        result.z * albedo.b
-    );
-    */
-
     if(isEmissive)
     {
-        result = EmissiveTerm(point, Vector3(0,0,0)-ray.direction);
-        double r = ray.t;
+        result = EmissiveTerm(point, Vector3(0,0,0)-ray_In.direction);
+        double r = ray_In.t;
         result = result / (4.0 * PI * r * r);
         return result;
     }
     else
     {
-        Vector3 from = ray.at(ray.t) + normal * 0.000001;
-        Vector3 to = Vector3::Reflect(ray.direction, normal);
+        Vector3 from = ray_In.at(ray_In.t) + normal * 0.000001;
+        Vector3 to = Vector3::Reflect(ray_In.direction, normal);
         Ray* newRay = new Ray(from, to);
-        newRay->depth = ray.depth - 1;
+        newRay->depth = ray_In.depth - 1;
 
-        Vector3 result = newRay->Trace_Lambert(Interval(0.00001f, __FLT_MAX__));
+        Vector3 result = newRay->Trace(Interval(0.00001f, __FLT_MAX__));
         double radiusIntencity = result.Magnitude();
         result.x = result.x / radiusIntencity;
         result.y = result.y / radiusIntencity;
@@ -81,29 +71,49 @@ Vector3 Material::Shade_Lambert(const Ray& ray,double u,double v,Vector3 normal,
     }
 }
 
-
-Vector3 Material::Shade_PBS(const Ray& ray,int sampleCount,double u,double v,Vector3 normal)
+Vector3 Material_Lambert::EmissiveTerm(Vector3 point, Vector3 direction)
 {
-    Vector3 x = ray.at(ray.t);
-    Vector3 wo = Vector3(0, 0, 0) - ray.direction;
-    int rayDepth = ray.depth -1;
-    double r = ray.t;
+    //TODO: 实现 Material_Lambert 类中的 EmissiveTerm 函数
+    return Vector3(0, 0, 0);
+}
+Vector3 Material_Lambert::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
+{
+    //TODO: 实现 Material_Lambert 类中的 ReflectionTerm 函数
+    return Vector3(0, 0, 0);
+}
 
-    wo = EmissiveTerm(x, wo) + ReflectionTerm(x, wo,normal, sampleCount, rayDepth);
+
+
+
+Vector3 Material_PBM::Shade(Ray& ray_In, HitRecord& hitRecord)
+{
+
+    Vector3 x = ray_In.at(ray_In.t);
+    Vector3 wo = Vector3(0, 0, 0) - ray_In.direction;
+    int rayDepth = ray_In.depth -1;
+    double r = ray_In.t;
+
+    wo = EmissiveTerm(x, wo) + ReflectionTerm(ray_In, hitRecord);
     wo = wo / (4.0 * PI * r * r);//光照衰减
     return wo;
 }
 
-Vector3 Material::EmissiveTerm(Vector3 x, Vector3 wo)
+Vector3 Material_PBM::EmissiveTerm(Vector3 wo , Vector3 point)
 {
     //if(isEmissive) std::cout<<"光源被采样一次"<<std::endl;
     return emissiveDistribution * emissiveIntensity;
 }
 
-Vector3 Material::ReflectionTerm(Vector3 x, Vector3 wo,Vector3 normal, int sampleCount,int rayDepth)
+Vector3 Material_PBM::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
 {
+    Vector3 x = ray_In.at(ray_In.t);
+    Vector3 wo = Vector3(0, 0, 0) - ray_In.direction;
+    int rayDepth = ray_In.depth - 1;
+    int sampleCount = PDF_SAMPLE_COUNT;
+    Vector3 normal = hitRecord.normal;
+
     if (this->isEmissive) return Vector3(0, 0, 0);// 发光材质不计算反射
-    if (rayDepth == 0) return Vector3(0, 0, 0); // 光线递归深度为0，不计算反射
+    if (ray_In.depth == 0) return Vector3(0, 0, 0); // 光线递归深度为0，不计算反射
 
     std::vector<Ray*> rays;
     double PDF_Term = PDF::SampleHemisphere(x, rays, sampleCount, rayDepth,normal);
@@ -114,7 +124,7 @@ Vector3 Material::ReflectionTerm(Vector3 x, Vector3 wo,Vector3 normal, int sampl
         Vector3 wi = rays[i]->direction;
 
         double BRDF_Term = BRDF(x, wo, wi,normal);
-        Vector3 Li_Term = rays[i]->Trace_PBR(Interval(0.00001f,__FLT_MAX__));
+        Vector3 Li_Term = rays[i]->Trace(Interval(0.00001f,__FLT_MAX__));
         double  Cos_Term = std::max(0.0, Vector3::Dot(wi, normal));
 
         result += BRDF_Term * Li_Term * Cos_Term / PDF_Term;
@@ -138,7 +148,7 @@ Vector3 Material::ReflectionTerm(Vector3 x, Vector3 wo,Vector3 normal, int sampl
     return result;
 }
 
-double Material::BRDF(Vector3 x, Vector3 wo, Vector3 wi,Vector3 normal)
+double Material_PBM::BRDF(Vector3 x, Vector3 wo, Vector3 wi,Vector3 normal)
 {
     double D = NormalDistribution_GGX(wi, wo, normal);
     double F = FresnelTerm_Schlick(wi, normal);
@@ -148,7 +158,7 @@ double Material::BRDF(Vector3 x, Vector3 wo, Vector3 wi,Vector3 normal)
     double BRDF_Term = D * F * G / denom;
     return BRDF_Term;
 }
-double Material::NormalDistribution_GGX(Vector3 wi, Vector3 wo,Vector3 normal)
+double Material_PBM::NormalDistribution_GGX(Vector3 wi, Vector3 wo,Vector3 normal)
 {
     double alpha = roughness;
     Vector3 halfVector = (wi + wo).Normalized();
@@ -166,7 +176,7 @@ double Material::NormalDistribution_GGX(Vector3 wi, Vector3 wo,Vector3 normal)
     return result;
 }
 
-double Material::FresnelTerm_Schlick(Vector3 wi,Vector3 normal)
+double Material_PBM::FresnelTerm_Schlick(Vector3 wi,Vector3 normal)
 {
     // Schlick近似公式 f = f0 + (1-f0)(1-cosθ)^5
     // 其中：
@@ -176,7 +186,7 @@ double Material::FresnelTerm_Schlick(Vector3 wi,Vector3 normal)
     return metallic + (1 - metallic) * std::pow(1 - Vector3::Dot(wi, normal), 5);
 }
 
-double Material::GeometryOcclusionTerm_Schlick(Vector3 wo,Vector3 wi,Vector3 normal)
+double Material_PBM::GeometryOcclusionTerm_Schlick(Vector3 wo,Vector3 wi,Vector3 normal)
 {
     //Schlick近似公式: g = g1(θi) * g1(θo)
     

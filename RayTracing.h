@@ -2,7 +2,7 @@
 
 #define PI 3.1415926535897932
 #define PDF_SAMPLE_COUNT 2
-#define RAY_DEPTH 50
+#define RAY_DEPTH 6
 
 #include <cmath>
 #include <random>

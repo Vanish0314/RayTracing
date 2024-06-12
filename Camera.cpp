@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 03:57:26
+ * @LastEditTime: 2024-06-12 16:54:00
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #include "Camera.h"
 
 

@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 03:57:21
+ * @LastEditTime: 2024-06-12 17:37:27
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 #include "Hittable.h"
@@ -12,10 +19,8 @@ public:
     ~Sphere();
 public:
 
-HitRecord* Hit (const Ray& ray ,const Interval interval)
+void Hit (const Ray& ray ,const Interval interval,HitRecord& hitRecord)
     override {
-        //Create a hit record to store the hit information
-        HitRecord* result = new HitRecord();
 
         // Solve t^2 * d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
         // where o: sphere center, p: ray origin, d: ray direction, R: sphere radius,t: 光线行进距离
@@ -31,10 +36,10 @@ HitRecord* Hit (const Ray& ray ,const Interval interval)
         // discriminant = b^2 - 4ac
         float discriminant = b * b - 4 * a * c;
         if (discriminant < 0) {
-            result->hitted = false;
-            return result;
+            hitRecord.hitted = false;
+            return;
         }
-        result->hitted = true;
+        hitRecord.hitted = true;
         
         // Calculate the two possible intersection points
         // t = (-b +- sqrt(discriminant)) / (2*a)
@@ -57,22 +62,21 @@ HitRecord* Hit (const Ray& ray ,const Interval interval)
             }
             else
             {
-                result->hitted = false;
-                return result;
+                hitRecord.hitted = false;
+                return;
             }
         }
-        result->t = t;
+        hitRecord.t = t;
 
         //Configure the hit record
-        result->hitPoint = ray.at(result->t);
-        result->normal = (result->hitPoint - position).Normalized();
-        result->material = material;
-        result->isFrontFace = (ray.direction.Dot(result->normal) < 0);
-        result->u = GetUAt(result->hitPoint);
-        result->v = GetVAt(result->hitPoint);
-        result->obj = this;
+        hitRecord.hitPoint = ray.at(hitRecord.t);
+        hitRecord.normal = (hitRecord.hitPoint - position).Normalized();
+        hitRecord.material = material;
+        hitRecord.isFrontFace = (ray.direction.Dot(hitRecord.normal) < 0);
+        hitRecord.u = GetUAt(hitRecord.hitPoint);
+        hitRecord.v = GetVAt(hitRecord.hitPoint);
+        hitRecord.obj = this;
 
-        return result;
     }
 private:
     double GetUAt(const Vector3& hitPoint) const;

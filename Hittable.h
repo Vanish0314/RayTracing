@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 03:57:21
+ * @LastEditTime: 2024-06-12 17:41:15
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 #include <string>
@@ -21,5 +28,6 @@ public:
     /// @brief 检查是否有交点
     /// @param ray 射出来的光线
     /// @return 返回是否有交点
-    virtual HitRecord* Hit(const Ray& ray ,const Interval interval) = 0;
+    virtual void Hit(const Ray& ray ,const Interval interval,HitRecord& hitRecord) = 0;
+
 };

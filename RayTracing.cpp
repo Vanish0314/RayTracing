@@ -37,6 +37,18 @@ int main()
         Vector3(0,0,0),
         1000000000
     );
+    std::shared_ptr<Material_DeBug> redDebug = std::make_shared<Material_DeBug>(
+        Color(1, 0, 0,1)
+    );
+    std::shared_ptr<Material_DeBug> whiteDebug = std::make_shared<Material_DeBug>(
+        Color(1, 1, 1,1)
+    );
+    std::shared_ptr<Material_DeBug> blueDebug = std::make_shared<Material_DeBug>(
+        Color(0, 0, 1,1)
+    );
+    std::shared_ptr<Material_DeBug> greenDebug = std::make_shared<Material_DeBug>(
+        Color(0, 1, 0,1)
+    );
 
     // create objects
 
@@ -47,6 +59,7 @@ int main()
         Vector3(0,0,555),
         Vector3(0,555,0),
         green_Lambert
+        //greenDebug
     );
     Quad* RedWall = new Quad(
         "RedWall",
@@ -54,12 +67,14 @@ int main()
         Vector3(0,0,-555),
         Vector3(0,555,0),
         red_Lambert
+        //redDebug
     );
     Quad* WhiteWall = new Quad(
         "WhiteWall",
         Vector3(0.0,555.0,0.0),
         Vector3(555,0,0),
         Vector3(0,0,555),
+        //whiteDebug
         white_Lambert
     );
     Quad* WhiteWall2 = new Quad(
@@ -67,6 +82,7 @@ int main()
         Vector3(0,0,555),
         Vector3(555,0,0),
         Vector3(0,0,-555),
+        //whiteDebug
         white_Lambert
     );
     Quad* WhiteWall3 = new Quad(
@@ -74,6 +90,7 @@ int main()
         Vector3(555,0,555),
         Vector3(-555,0,0),
         Vector3(0,555,0),
+        //whiteDebug
         white_Lambert
     );
 
@@ -90,6 +107,7 @@ int main()
         "GlassSphere",
         165,
         Vector3(190,90,190),
+        //blueDebug
         blue_Lambert
     );
 
@@ -99,6 +117,7 @@ int main()
         Vector3(343,554,332),
         Vector3(-130,0,0),
         Vector3(0,0,-105),
+        //redDebug
         WhiteLight_Lambert
     );
 

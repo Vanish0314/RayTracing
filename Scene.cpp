@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 04:37:49
+ * @LastEditTime: 2024-06-12 17:42:05
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #include "Scene.h"
 Scene::Scene()
 {
@@ -16,19 +23,19 @@ void Scene::AddObject(Hittable* obj)
 	else hittables.push_back(obj);
 }
 
-HitRecord* Scene::Hit(const Ray& ray, Interval interval) const{
-	HitRecord* result = nullptr;
+void Scene::Hit(const Ray &ray, Interval interval, HitRecord &hitRecord) const
+{
 
-	for(auto obj : objects)
+	for (auto obj : objects)
 	{
-		HitRecord* hit = obj->Hit(ray, interval);
-		if(interval.Surrounds(hit->t))
+		HitRecord hit;
+		obj->Hit(ray, interval, hit);
+		if (interval.Surrounds(hit.t))
 		{
-			if(result == nullptr || hit->t < result->t)
-				result = hit;
+			if (hitRecord.t < 0 || hit.t < hitRecord.t)
+				hitRecord.Configure(hit);
 		}
 	}
-	if(result == nullptr) result = new HitRecord(false);
-	//else std::cout << "Hit object: " << result->obj->name << std::endl;
-	return result;
+	if (hitRecord.t < 0)
+		hitRecord.hitted = false;
 }

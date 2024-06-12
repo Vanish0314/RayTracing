@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 03:57:21
+ * @LastEditTime: 2024-06-12 18:54:57
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 
@@ -18,7 +25,7 @@ public:
     double    u;//纹理坐标u
     double    v;//纹理坐标v
     bool      isFrontFace;//是否是正面
-    std::shared_ptr<Material> material;//材质
+    std::shared_ptr<Material> material = nullptr;//材质
     Hittable* obj; //击中的物体
     
 
@@ -27,6 +34,30 @@ public:
     HitRecord(bool _hitted, Vector3 _hitPoint, Vector3 _normal, double _t, double _u, double _v, std::shared_ptr<Material> _material,Hittable* obj,bool _isFrontFace):hitted(_hitted),hitPoint(_hitPoint),normal(_normal),t(_t),u(_u),v(_v),isFrontFace(_isFrontFace),material(_material),obj(obj){}
     HitRecord():hitted(false),hitPoint(Vector3(0,0,0)),normal(Vector3(0,0,0)),t(-1),u(-1),v(-1),isFrontFace(false),material(nullptr){}
     ~HitRecord(){}
+
+public:
+    void Configure(bool _hitted, Vector3 _hitPoint, Vector3 _normal, double _t, double _u, double _v, std::shared_ptr<Material> _material,Hittable* obj,bool _isFrontFace){
+        hitted      = _hitted;
+        hitPoint    = _hitPoint;
+        normal      = _normal;
+        t           = _t;
+        u           = _u;
+        v           = _v;
+        isFrontFace = _isFrontFace;
+        material    = _material;
+        this->obj   = obj;
+    }
+    void Configure(const HitRecord& other){
+        hitted      = other.hitted;
+        hitPoint    = other.hitPoint;
+        normal      = other.normal;
+        t           = other.t;
+        u           = other.u;
+        v           = other.v;
+        isFrontFace = other.isFrontFace;
+        material    = other.material;
+        obj         = other.obj;
+    }
 };
 
 class Interval{

@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 03:57:21
+ * @LastEditTime: 2024-06-12 17:04:11
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 #include <iostream>
@@ -40,8 +47,8 @@ public:
 			Vector3 term3 = w * nearZ;
 		    pixel_00_Location = term1 + term2 + term3;
 
-			Vector3 pixelDeltaX = u * (viewportWidth / static_cast<double>(imageWidth)); // 视角坐标系每一个像素x方向的大小
-			Vector3 pixelDeltaY = v * (viewportHeight / static_cast<double>(imageHeight)); // 视角坐标系每一个像素y方向的大小
+			pixelDeltaX = u * (viewportWidth / imageWidth); // 视角坐标系每一个像素x方向的大小
+			pixelDeltaY = v * (viewportHeight / imageHeight); // 视角坐标系每一个像素y方向的大小
 	
 		}
 	~Camera() {}

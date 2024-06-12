@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 03:57:21
+ * @LastEditTime: 2024-06-12 17:33:39
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 #include "RayTracing.h"
@@ -16,5 +23,5 @@ public:
 public:
     void AddObject(Hittable* object);
 public:
-    HitRecord* Hit(const Ray& ray, Interval interval) const;
+    void Hit(const Ray& ray, Interval interval, HitRecord &hitRecord) const;
 };

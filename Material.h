@@ -125,3 +125,21 @@ private:
     double FresnelTerm_Schlick(Vector3 wi,Vector3 normal);
     double GeometryOcclusionTerm_Schlick(Vector3 wo,Vector3 wi,Vector3 normal);
 };
+
+class Material_DeBug : public Material
+{
+public:
+    Material_DeBug(Color albedo)
+        : Material(albedo){}
+    Material_DeBug(Vector3 emissiveDistribution, double emissiveIntensity)
+        : Material(emissiveDistribution, emissiveIntensity)
+    {
+        isEmissive = true;
+    }
+    ~Material_DeBug() {}
+
+public:
+    Vector3 Shade(Ray& ray_In, HitRecord& hitRecord) override;
+    Vector3 EmissiveTerm(Vector3 wo , Vector3 point) override;
+    Vector3 ReflectionTerm(Ray& ray_In, HitRecord& hitRecord) override;
+};

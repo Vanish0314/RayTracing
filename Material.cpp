@@ -39,12 +39,21 @@ Vector3 Material::RadianceColorful(Vector3 radiance)
 
 Vector3 Material_BlinnPhong::Shade(Ray& ray_In, HitRecord& hitRecord)
 {
-
+    /*
     Vector3 I_Ambient = Vector3(0, 0, 0);
     Vector3 I_Diffuse = Vector3(0, 0, 0);
     Vector3 I_Specular = Vector3(0, 0, 0);
+    */
 
-    I
+    if (ray_In.depth <= 0)
+        return Vector3(0,0,0);
+    
+    Ray scattered =Ray(hitRecord.hitPoint + hitRecord.normal * 0.0000000001,Vector3::Reflect(ray_In.direction, hitRecord.normal));
+    scattered.depth = ray_In.depth - 1;
+    Vector3 attenuation = Vector3(albedo.r, albedo.g, albedo.b);
+
+    return attenuation + (0.5 * scattered.Trace(Interval()));
+
 }
 
 Vector3 Material_BlinnPhong::EmissiveTerm(Vector3 point, Vector3 direction)
@@ -172,4 +181,23 @@ double Material_PBM::GeometryOcclusionTerm_Schlick(Vector3 wo,Vector3 wi,Vector3
     double go = 2/(1 + std::sqrt(1 + std::pow(roughness,2) * std::pow(coso,2)));
 
     return gi * go;
+}
+
+Vector3 Material_DeBug::Shade(Ray& ray_In, HitRecord& hitRecord)
+{
+    return Vector3(
+        400 * albedo.r,
+        400 * albedo.g,
+        400 * albedo.b
+    );
+}
+
+Vector3 Material_DeBug::EmissiveTerm(Vector3 point, Vector3 direction)
+{
+    return Vector3(0, 0, 0);
+}
+
+Vector3 Material_DeBug::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
+{
+    return Vector3(0, 0, 0);
 }

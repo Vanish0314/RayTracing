@@ -136,12 +136,12 @@ int main()
 
     // set up camera
     Camera* camera = new Camera(
-        Vector3(280, 100, -800),
+        Vector3(280, 250, -600),
         Vector3(  0,   0,    1),
         Vector3(0.0, 1.0,  0.0),
         1920,
         1080,
-        120
+        135
         );
 
     // creat ppm image file

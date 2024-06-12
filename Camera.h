@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-12 17:04:11
+ * @LastEditTime: 2024-06-12 19:59:39
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -31,7 +31,7 @@ public:
 	Camera(Vector3 position, Vector3 direction, Vector3 up,int imageWidth, int imageHeight, float fov)
 		: m_position(position), m_direction(direction), m_up(up), imageWidth(imageWidth), imageHeight(imageHeight), fov(fov)
 		{
-			// 计算ViewPort
+			// 计算ViewPort //FIXME:fov到viewport的计算并不正确
 			double theta = fov * PI / 180.0; // 视角角度
 			double viewportHeight = 2.0 * nearZ/std::tan(theta/2); // 视角高度
 			double viewportWidth = viewportHeight * (double)imageWidth / imageHeight; // 视角宽度

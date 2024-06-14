@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:26
- * @LastEditTime: 2024-06-12 16:54:00
+ * @LastEditTime: 2024-06-14 23:37:30
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -19,21 +19,31 @@ void Camera::Render(const Scene& scene,std::ostream& output)
     //逐像素渲染,从左到右，从上到下
     for(int y=0;y<imageHeight;y++)
     {
-        if(y - progress > 100)
-        {
-            progress = y;
-            progress = progress * 100 / imageHeight;
-            std::cout<<"渲染进度:"<<progress<<"%"<<std::endl;
-        }
+        // //输出进度
+        // if(y - progress > 100)
+        // {
+        //     progress = y;
+        //     progress = progress * 100 / imageHeight;
+        //     std::cout<<"渲染进度:"<<progress<<"%"<<std::endl;
+        // }
+        
         for(int x=0;x<imageWidth;x++)
         {
+            //渲染每个像素
+            for(int i=0;i<samplesPerPixel;i++)
+            {
+                Ray ray = Ray(Vector3(0,0,0),Vector3(0,0,0));
+                GetRay(x,y,ray);
 
-            std::shared_ptr<Ray> ray = GetRay(x,y);
-            color = PerPixelShading(*ray,scene);
+                color += PerPixelShading(ray,scene);
+                std::cout<<"\033[31m"<<"此光线像素结果:【"<<color.r<<","<<color.g<<","<<color.b<<"】"<<"\033[m"<<"/////==/////";
+            }
+            color /= samplesPerPixel;
+            color.Clamp();
+
+            std::cout<<"\033[31m"<<"像素最终结果:【"<<color.r<<","<<color.g<<","<<color.b<<"】"<<"\033[m"<<std::endl;
             WritePixelColor(output,color);
-
             color = Color(0,0,0,1);
-            ray.reset();
         }
     }
     std::cout<<"渲染完成"<<std::endl;
@@ -46,7 +56,7 @@ void Camera::WriteFileHeader(std::ostream& output)
 }
 
 
-std::shared_ptr<Ray> Camera::GetRay(int pixelIndexX,int pixelIndexY)
+void Camera::GetRay(int pixelIndexX,int pixelIndexY,Ray& ray)
 {
     Vector3 bias = pixel_00_Location
                  + pixelDeltaX * pixelIndexX
@@ -55,7 +65,7 @@ std::shared_ptr<Ray> Camera::GetRay(int pixelIndexX,int pixelIndexY)
     Vector3 origin = m_position;
     Vector3 direction = (bias - origin).Normalized();
 
-    return std::make_shared<Ray>(origin,direction);
+    ray = Ray(origin,direction);
 }
 
 

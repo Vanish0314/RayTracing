@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-12 19:59:39
+ * @LastEditTime: 2024-06-14 20:35:30
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -29,7 +29,7 @@ public:
 
 public:
 	Camera(Vector3 position, Vector3 direction, Vector3 up,int imageWidth, int imageHeight, float fov)
-		: m_position(position), m_direction(direction), m_up(up), imageWidth(imageWidth), imageHeight(imageHeight), fov(fov)
+		: m_position(position), m_direction(direction), m_up(up), imageWidth(imageWidth), imageHeight(imageHeight), fov(fov), samplesPerPixel(SAMPLE_COUNT)	
 		{
 			// 计算ViewPort //FIXME:fov到viewport的计算并不正确
 			double theta = fov * PI / 180.0; // 视角角度
@@ -58,7 +58,7 @@ public:
 
 private:
 	void WriteFileHeader(std::ostream& output);
-	std::shared_ptr<Ray> GetRay(int pixelIndexX,int pixelIndexY);
+	void GetRay(int pixelIndexX,int pixelIndexY,Ray& ray);
 	Color PerPixelShading(Ray& ray, const Scene& scene);
 	void WritePixelColor(std::ostream& output,Color& color);
 
@@ -67,6 +67,7 @@ private:
 	Vector3 u,v,w; // 视角坐标系
 	Vector3 pixelDeltaX, pixelDeltaY; // 视角坐标系每一个像素的大小
 	double nearZ = 1.0; // 近裁剪面
+	int samplesPerPixel = SAMPLE_COUNT; // 采样数
 
 public:
 	

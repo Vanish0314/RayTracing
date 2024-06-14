@@ -1,21 +1,21 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-06-02 04:28:38
+ * @LastEditTime: 2024-06-14 23:20:52
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #include "Material.h"
 
-/// @brief 采样半球面，返回一系列光线
-/// @param point 采样点
-/// @param result 结果容器
-/// @param sampleCount 需要的光线数量
-/// @param rayDepth 光线递归深度
-/// @return PDF 项的值
-double PDF::SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleCount,int rayDepth,Vector3 normal)
+
+double PDF::SampleHemisphere(Vector3 point,Ray& result,Vector3 normal)
 {
-    for (int i = 0; i < sampleCount; i++)
-    {
-        Vector3 randomVec = Vector3::RandomInHemisphere(normal);
-        Ray* ray = new Ray(point + normal * 0.0000001, randomVec.Normalized());
-        ray->depth = rayDepth -1;
-        result.push_back(ray);
-    }
-    
+
+    Vector3 randomVec = Vector3::RandomInHemisphere(normal);
+    result.origin = point + normal * 0.0000001;
+    result.direction = randomVec.Normalized();
+    result.depth++;
+
     double PDF_Term = 1 / (2 * PI);
     return PDF_Term;
 }
@@ -23,13 +23,13 @@ double PDF::SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleC
 Vector3 Material::RadianceColorful(Vector3 radiance)
 {
     double radiusIntencity = radiance.Magnitude();
-        radiance.x = radiance.x / radiusIntencity;
-        radiance.y = radiance.y / radiusIntencity;
-        radiance.z = radiance.z / radiusIntencity;
-        radiance.x = radiance.x * albedo.r;
-        radiance.y = radiance.y * albedo.g;
-        radiance.z = radiance.z * albedo.b;
-        radiance   = radiance * radiusIntencity;
+           radiance.x      = radiance.x / radiusIntencity;
+           radiance.y      = radiance.y / radiusIntencity;
+           radiance.z      = radiance.z / radiusIntencity;
+           radiance.x      = radiance.x * albedo.r;
+           radiance.y      = radiance.y * albedo.g;
+           radiance.z      = radiance.z * albedo.b;
+           radiance        = radiance   * radiusIntencity;
 
     return radiance;
 }
@@ -56,17 +56,6 @@ Vector3 Material_BlinnPhong::Shade(Ray& ray_In, HitRecord& hitRecord)
 
 }
 
-Vector3 Material_BlinnPhong::EmissiveTerm(Vector3 point, Vector3 direction)
-{
-    //TODO: 实现 Material_Lambert 类中的 EmissiveTerm 函数
-    return Vector3(0, 0, 0);
-}
-Vector3 Material_BlinnPhong::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
-{
-    //TODO: 实现 Material_Lambert 类中的 ReflectionTerm 函数
-    return Vector3(0, 0, 0);
-}
-
 
 
 
@@ -74,48 +63,43 @@ Vector3 Material_PBM::Shade(Ray& ray_In, HitRecord& hitRecord)
 {
 
     Vector3 x = ray_In.at(ray_In.t);
-    Vector3 wo = Vector3(0, 0, 0) - ray_In.direction;
-    int rayDepth = ray_In.depth -1;
+    Vector3 wo = Vector3(0,0,0) - ray_In.direction;
+    Vector3 normal = hitRecord.normal;
     double r = ray_In.t;
 
-    wo = EmissiveTerm(x, wo) + ReflectionTerm(ray_In, hitRecord);
+    //找到光源则不继续Trace
+    if(isEmissive) 
+        wo = EmissiveTerm(x, wo);
+    else 
+        wo = ReflectionTerm(ray_In, normal);
+
     wo = wo / (4.0 * PI * r * r);//光照衰减
     return wo;
 }
 
 Vector3 Material_PBM::EmissiveTerm(Vector3 wo , Vector3 point)
 {
-    //if(isEmissive) std::cout<<"光源被采样一次"<<std::endl;
+    #ifdef DEBUG_TRACERAY
+            std::cout <<"是光源"<< std::endl;
+    #endif
     return emissiveDistribution * emissiveIntensity;
 }
 
-Vector3 Material_PBM::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
-{
-    Vector3 x = ray_In.at(ray_In.t);
-    Vector3 wo = Vector3(0, 0, 0) - ray_In.direction;
-    int rayDepth = ray_In.depth - 1;
-    int sampleCount = PDF_SAMPLE_COUNT;
-    Vector3 normal = hitRecord.normal;
+Vector3 Material_PBM::ReflectionTerm(Ray& ray,const Vector3& normal)
+{   
+    Vector3 wo = Vector3(0,0,0) - ray.direction;
+    Vector3 x = ray.at(ray.t);
 
-    if (this->isEmissive) return Vector3(0, 0, 0);// 发光材质不计算反射
-    if (ray_In.depth == 0) return Vector3(0, 0, 0); // 光线递归深度为0，不计算反射
-
-    std::vector<Ray*> rays;
-    double PDF_Term = PDF::SampleHemisphere(x, rays, sampleCount, rayDepth,normal);
+    double PDF_Term = PDF::SampleHemisphere(x,ray,normal);
+    Vector3 wi = ray.direction;
 
     Vector3 result = Vector3(0, 0, 0);
-    for (int i = 0; i < rays.size(); i++)
-    {
-        Vector3 wi = rays[i]->direction;
 
-        double BRDF_Term = BRDF(x, wo, wi,normal);
-        Vector3 Li_Term = rays[i]->Trace(Interval(0.00001f,__FLT_MAX__));
-        double  Cos_Term = std::max(0.0, Vector3::Dot(wi, normal));
+    double BRDF_Term = BRDF(x, wo, wi,normal);
+    Vector3 Li_Term = ray.Trace(Interval(0.00001f,__FLT_MAX__));
+    double  Cos_Term = std::max(0.0, Vector3::Dot(wi, normal));
+    result = BRDF_Term * Li_Term * Cos_Term / PDF_Term;
 
-        result += BRDF_Term * Li_Term * Cos_Term / PDF_Term;
-    }
-
-    result = result / sampleCount;
     double radiusIntencity = result.Magnitude();
     result.x = result.x / radiusIntencity;
     result.y = result.y / radiusIntencity;
@@ -124,21 +108,33 @@ Vector3 Material_PBM::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
     result.y = result.y * albedo.g;
     result.z = result.z * albedo.b;
     result   = result * radiusIntencity;
-    //释放内存
-    for(int i = rays.size()-1; i >= 0; i--)
-    {
-        delete rays[i];
-    }
-    rays.clear();
+    
     return result;
 }
 
 double Material_PBM::BRDF(Vector3 x, Vector3 wo, Vector3 wi,Vector3 normal)
 {
+    /*
+        Cook-Torrance BRDF 方程
+        D: 法线分布函数
+        F: 菲涅尔方程
+        G: 几何遮蔽函数
+        denom: 辐射分母 = 4 * Dot(wo, normal) * Dot(wi, normal)
+
+        BRDF = D * F * G / denom
+    */
+    
     double D = NormalDistribution_GGX(wi, wo, normal);
     double F = FresnelTerm_Schlick(wi, normal);
     double G = GeometryOcclusionTerm_Schlick(wo, wi, normal);
     double denom = 4 * Vector3::Dot(wo, normal) * Vector3::Dot(wi, normal);
+
+    if(Vector3::Dot(wo, normal) < 0){
+        return 0;
+    }
+    if(Vector3::Dot(wi, normal) < 0){
+        return 0;
+    }
 
     double BRDF_Term = D * F * G / denom;
     return BRDF_Term;
@@ -181,23 +177,4 @@ double Material_PBM::GeometryOcclusionTerm_Schlick(Vector3 wo,Vector3 wi,Vector3
     double go = 2/(1 + std::sqrt(1 + std::pow(roughness,2) * std::pow(coso,2)));
 
     return gi * go;
-}
-
-Vector3 Material_DeBug::Shade(Ray& ray_In, HitRecord& hitRecord)
-{
-    return Vector3(
-        400 * albedo.r,
-        400 * albedo.g,
-        400 * albedo.b
-    );
-}
-
-Vector3 Material_DeBug::EmissiveTerm(Vector3 point, Vector3 direction)
-{
-    return Vector3(0, 0, 0);
-}
-
-Vector3 Material_DeBug::ReflectionTerm(Ray& ray_In, HitRecord& hitRecord)
-{
-    return Vector3(0, 0, 0);
 }

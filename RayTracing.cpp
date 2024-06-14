@@ -1,3 +1,11 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-06-01 21:38:49
+ * @LastEditTime: 2024-06-14 23:33:47
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
+
 
 #include "RayTracing.h"
 
@@ -10,44 +18,58 @@
 
 Scene* g_Scene;
 
+
 int main() 
 {
     // create materials
-    std::shared_ptr<Material_BlinnPhong> red_Lambert = std::make_shared<Material_BlinnPhong>(
+    auto red_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(1, 0, 0,1),
         0.5,
         0.5
     );
-    std::shared_ptr<Material_BlinnPhong> green_Lambert = std::make_shared<Material_BlinnPhong>(
+    auto green_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(0, 1, 0,1),
         1.0,
         0
     );
-    std::shared_ptr<Material_BlinnPhong> blue_Lambert = std::make_shared<Material_BlinnPhong>(
+    auto blue_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(0, 0, 1,1),
         0.5,
         0.5
     );
-    std::shared_ptr<Material_BlinnPhong> white_Lambert = std::make_shared<Material_BlinnPhong>(
+    auto white_Lambert = std::make_shared<Material_BlinnPhong>(
+        Color(1, 1, 1,1),
+        0.5, 
+        0.5
+    );
+    auto WhiteLight_Lambert = std::make_shared<Material_BlinnPhong>(
+        Vector3(0,0,0),
+        1000000000
+    );
+
+    auto white = std::make_shared<Material_PBM>(
         Color(1, 1, 1,1),
         0.5,
         0.5
     );
-    std::shared_ptr<Material_BlinnPhong> WhiteLight_Lambert = std::make_shared<Material_BlinnPhong>(
-        Vector3(0,0,0),
+    auto red = std::make_shared<Material_PBM>(
+        Color(1, 0, 0,1),
+        0.5,
+        0.5
+    );
+    auto green = std::make_shared<Material_PBM>(
+        Color(0, 1, 0,1),
+        0.5,
+        0.5
+    );
+    auto blue = std::make_shared<Material_PBM>(
+        Color(0, 0, 1,1),
+        0.5,
+        0.5
+    );
+    auto white_Light = std::make_shared<Material_PBM>(
+        Vector3(1,1,1),
         1000000000
-    );
-    std::shared_ptr<Material_DeBug> redDebug = std::make_shared<Material_DeBug>(
-        Color(1, 0, 0,1)
-    );
-    std::shared_ptr<Material_DeBug> whiteDebug = std::make_shared<Material_DeBug>(
-        Color(1, 1, 1,1)
-    );
-    std::shared_ptr<Material_DeBug> blueDebug = std::make_shared<Material_DeBug>(
-        Color(0, 0, 1,1)
-    );
-    std::shared_ptr<Material_DeBug> greenDebug = std::make_shared<Material_DeBug>(
-        Color(0, 1, 0,1)
     );
 
     // create objects
@@ -58,7 +80,8 @@ int main()
         Vector3(555.0,0.0,0.0),
         Vector3(0,0,555),
         Vector3(0,555,0),
-        green_Lambert
+        green
+        //green_Lambert
         //greenDebug
     );
     Quad* RedWall = new Quad(
@@ -66,7 +89,8 @@ int main()
         Vector3(0.0,0.0,555.0),
         Vector3(0,0,-555),
         Vector3(0,555,0),
-        red_Lambert
+        red
+        //red_Lambert
         //redDebug
     );
     Quad* WhiteWall = new Quad(
@@ -75,7 +99,8 @@ int main()
         Vector3(555,0,0),
         Vector3(0,0,555),
         //whiteDebug
-        white_Lambert
+        //white_Lambert
+        white
     );
     Quad* WhiteWall2 = new Quad(
         "WhiteWall2",
@@ -83,7 +108,8 @@ int main()
         Vector3(555,0,0),
         Vector3(0,0,-555),
         //whiteDebug
-        white_Lambert
+        //white_Lambert
+        white
     );
     Quad* WhiteWall3 = new Quad(
         "WhiteWall3",
@@ -91,7 +117,8 @@ int main()
         Vector3(-555,0,0),
         Vector3(0,555,0),
         //whiteDebug
-        white_Lambert
+        //white_Lambert
+        white
     );
 
     //Box
@@ -108,7 +135,8 @@ int main()
         165,
         Vector3(190,90,190),
         //blueDebug
-        blue_Lambert
+        //blue_Lambert
+        blue
     );
 
     // add lights to scene
@@ -118,7 +146,8 @@ int main()
         Vector3(-130,0,0),
         Vector3(0,0,-105),
         //redDebug
-        WhiteLight_Lambert
+        //WhiteLight_Lambert
+        white_Light
     );
 
     // create scene
@@ -152,6 +181,18 @@ int main()
 
     // close file
     outputFile.close();
+
+    // 释放内存
+    delete GreenWall;
+    delete RedWall;
+    delete WhiteWall;
+    delete WhiteWall2;
+    delete WhiteWall3;
+    // delete WhiteBox;
+    delete GlassSphere;
+    delete Light;
+    delete camera;
+    delete g_Scene;
 
     return 0;
 }

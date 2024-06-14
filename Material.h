@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 17:52:04
+ * @LastEditTime: 2024-06-14 23:57:12
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 #include "RayTracing.h"
@@ -6,7 +13,7 @@
 
 class PDF{
 public:
-    static double SampleHemisphere(Vector3 point,std::vector<Ray*>& result,int sampleCount,int rayDepth,Vector3 normal);
+    static double SampleHemisphere(Vector3 point,Ray& result,Vector3 normal);
 };
 
 
@@ -48,21 +55,9 @@ public:
     /// @param scatterRecord 散射的信息与设置
     /// @return 返回wo方向上计算了光照衰减（根据t）后的radiance
     virtual Vector3 Shade(Ray& ray_In, HitRecord& hitRecord) = 0;
-    /// @brief 计算自发光项
-    /// @param wo 自发光radiance的方向
-    /// @param point 自发光radiance的位置
-    /// @return 返回wo方向上计算了光照衰减（根据t）后的radiance
-    virtual Vector3 EmissiveTerm(Vector3 wo , Vector3 point) = 0;
-    /// @brief 计算反射项
-    /// @param ray_In 射入光线
-    /// @param hitRecord 与材质的相交信息
-    /// @param scatterRecord 散射的信息与设置
-    /// @return 返回wo方向上计算了光照衰减（根据t）后的radiance
-    virtual Vector3 ReflectionTerm(Ray& ray_In, HitRecord& hitRecord) = 0;
 protected:
     Vector3 RadianceColorful(Vector3 radiance);
 };
-
 class Material_BlinnPhong : public Material
 {
 public:
@@ -86,8 +81,6 @@ public:
     ~Material_BlinnPhong() {}
 public:
     Vector3 Shade(Ray& ray_In, HitRecord& hitRecord) override;
-    Vector3 EmissiveTerm(Vector3 wo , Vector3 point) override;
-    Vector3 ReflectionTerm(Ray& ray_In, HitRecord& hitRecord) override;
 };
 
 class Material_PBM : public Material
@@ -116,30 +109,21 @@ public:
 
 public:
     Vector3 Shade(Ray& ray_In, HitRecord& hitRecord) override;
-    Vector3 EmissiveTerm(Vector3 wo , Vector3 point) override;
-    Vector3 ReflectionTerm(Ray& ray_In, HitRecord& hitRecord) override;
+    /// @brief 计算自发光项
+    /// @param wo 自发光radiance的方向
+    /// @param point 自发光radiance的位置
+    /// @return 返回wo方向上计算了光照衰减（根据t）后的radiance
+    Vector3 EmissiveTerm(Vector3 wo , Vector3 point);
+    /// @brief 计算反射项
+    /// @param ray_In 射入光线
+    /// @param hitRecord 与材质的相交信息
+    /// @param scatterRecord 散射的信息与设置
+    /// @return 返回wo方向上计算了光照衰减（根据t）后的radiance
+    Vector3 ReflectionTerm(Ray& ray,const Vector3& normal);
 
 private:
     double BRDF(Vector3 x, Vector3 wo, Vector3 wi,Vector3 normal);
     double NormalDistribution_GGX(Vector3 wi, Vector3 wo,Vector3 normal);
     double FresnelTerm_Schlick(Vector3 wi,Vector3 normal);
     double GeometryOcclusionTerm_Schlick(Vector3 wo,Vector3 wi,Vector3 normal);
-};
-
-class Material_DeBug : public Material
-{
-public:
-    Material_DeBug(Color albedo)
-        : Material(albedo){}
-    Material_DeBug(Vector3 emissiveDistribution, double emissiveIntensity)
-        : Material(emissiveDistribution, emissiveIntensity)
-    {
-        isEmissive = true;
-    }
-    ~Material_DeBug() {}
-
-public:
-    Vector3 Shade(Ray& ray_In, HitRecord& hitRecord) override;
-    Vector3 EmissiveTerm(Vector3 wo , Vector3 point) override;
-    Vector3 ReflectionTerm(Ray& ray_In, HitRecord& hitRecord) override;
 };

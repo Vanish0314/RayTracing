@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-12 17:37:27
+ * @LastEditTime: 2024-06-14 21:35:30
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -16,7 +16,7 @@ public:
     float radius;
 public:
     Sphere(std::string name,float r,Vector3 position, std::shared_ptr<Material> material):Hittable(name,position,material),radius(r) {}
-    ~Sphere();
+    ~Sphere(){};
 public:
 
 void Hit (const Ray& ray ,const Interval interval,HitRecord& hitRecord)

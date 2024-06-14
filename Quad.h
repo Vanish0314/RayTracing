@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-06-01 20:54:31
- * @LastEditTime: 2024-06-12 17:26:14
+ * @LastEditTime: 2024-06-14 21:35:16
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -25,7 +25,7 @@ public:
             normal = n.Normalized();
             D = normal.Dot(startPoint); // 计算平面方程的常数项
         }
-    ~Quad();
+    ~Quad(){};
 public:
     void Hit(const Ray& ray ,const Interval interval,HitRecord& hitRecord) override
     {

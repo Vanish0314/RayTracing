@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 23:13:43
+ * @LastEditTime: 2024-06-14 20:37:53
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #include "Color.h"
 
 void Color::Clamp()

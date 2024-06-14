@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-06-04 21:42:34
+ * @LastEditTime: 2024-06-14 21:01:16
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 #include "Hittable.h"

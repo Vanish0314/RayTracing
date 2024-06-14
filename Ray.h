@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-12 18:54:57
+ * @LastEditTime: 2024-06-14 23:20:38
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -76,7 +76,7 @@ public:
 class Ray
 {
 public:
-    int     depth       = RAY_DEPTH; //光线的递归深度,在逐像素渲染函数中修改
+    int     depth       = 0;
     Vector3 origin;
     Vector3 direction;
     double  t           = -1;//在方向上行进的距离

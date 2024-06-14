@@ -1,3 +1,10 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 03:57:21
+ * @LastEditTime: 2024-06-14 21:59:07
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 #include <cmath>
@@ -157,7 +164,7 @@ public:
         Vector3 v = RandomUnit();
         if (v.Dot(normal) < 0)
         {
-            v = Vector3(0,0,0)-v;
+            v = Vector3(0,0,0) -v;
         }
         return v;
     }

@@ -1,8 +1,16 @@
+/*
+ * @Author: Vanish
+ * @Date: 2024-05-31 03:56:56
+ * @LastEditTime: 2024-06-14 23:42:21
+ * Also View: http://vanishing.cc
+ * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
+ */
 #pragma once
 
 #define PI 3.1415926535897932
-#define PDF_SAMPLE_COUNT 2
+#define SAMPLE_COUNT 2
 #define RAY_DEPTH 6
+#define RUSSIAN_ROULETTE_PROBABILITY 0.92
 
 #include <cmath>
 #include <random>

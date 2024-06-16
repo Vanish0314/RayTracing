@@ -1,16 +1,22 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:56:56
- * @LastEditTime: 2024-06-14 23:42:21
+ * @LastEditTime: 2024-06-16 22:27:30
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
 #pragma once
 
 #define PI 3.1415926535897932
-#define SAMPLE_COUNT 2
-#define RAY_DEPTH 6
-#define RUSSIAN_ROULETTE_PROBABILITY 0.92
+#define SAMPLE_COUNT 128
+#define RAY_DEPTH 4
+#define RUSSIAN_ROULETTE_PROBABILITY 0.7
+
+//#define DEBUG_TRACERAY
+#define CONSOLE_OUTPUT_RENDER_PROGRESS
+
+#define RENDERMODE_DEBUG
+//#define RENDERMODE_PBR
 
 #include <cmath>
 #include <random>

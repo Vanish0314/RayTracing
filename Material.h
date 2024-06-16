@@ -10,6 +10,7 @@
 #include "RayTracing.h"
 #include "Color.h"
 #include "Ray.h"
+#include "Random.h"
 
 class PDF{
 public:

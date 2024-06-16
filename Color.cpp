@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 23:13:43
- * @LastEditTime: 2024-06-14 20:37:53
+ * @LastEditTime: 2024-06-15 21:11:11
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -21,11 +21,13 @@ void Color::Clamp()
 
 Vector3 Color::Linear_To_SRGB(Vector3 radiance)
 {
-    Vector3 srgb = Vector3(1.055 * pow(radiance.x, 1.0 / 2.4) - 0.055,
-                           1.055 * pow(radiance.y, 1.0 / 2.4) - 0.055,
-                           1.055 * pow(radiance.z, 1.0 / 2.4) - 0.055);
+    // Vector3 srgb = Vector3(1.055 * pow(radiance.x, 1.0 / 2.4) - 0.055,
+    //                        1.055 * pow(radiance.y, 1.0 / 2.4) - 0.055,
+    //                        1.055 * pow(radiance.z, 1.0 / 2.4) - 0.055);
 
-    return srgb;
+    // return srgb;
+
+    return radiance;
 }
 
 Vector3 Color::ToneMapping_ACES(Vector3 convertedRadiance)

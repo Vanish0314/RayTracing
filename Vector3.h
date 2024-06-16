@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-14 21:59:07
+ * @LastEditTime: 2024-06-15 21:06:38
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -138,6 +138,11 @@ public:
     static Vector3 Random()
     {
         return Vector3(2 * (rand() / (double)RAND_MAX, rand()) -1.0 , 2 * (rand() / (double)RAND_MAX, rand()) -1.0, 2 * (rand() / (double)RAND_MAX, rand()) -1.0);
+    }
+
+    static Vector3 Random(double min, double max)
+    {
+        return Vector3(min + (max - min) * (rand() / (double)RAND_MAX), min + (max - min) * (rand() / (double)RAND_MAX), min + (max - min) * (rand() / (double)RAND_MAX));
     }
 
 

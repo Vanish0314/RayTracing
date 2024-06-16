@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-06-01 21:38:49
- * @LastEditTime: 2024-06-14 23:33:47
+ * @LastEditTime: 2024-06-16 22:05:20
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -24,7 +24,7 @@ int main()
     // create materials
     auto red_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(1, 0, 0,1),
-        0.5,
+        0.9,
         0.5
     );
     auto green_Lambert = std::make_shared<Material_BlinnPhong>(
@@ -34,11 +34,16 @@ int main()
     );
     auto blue_Lambert = std::make_shared<Material_BlinnPhong>(
         Color(0, 0, 1,1),
-        0.5,
+        0,
+        0.5
+    );
+    auto yellow_Lambert = std::make_shared<Material_BlinnPhong>(
+        Color(1, 1, 0,1),
+        0.9,
         0.5
     );
     auto white_Lambert = std::make_shared<Material_BlinnPhong>(
-        Color(1, 1, 1,1),
+        Color(0.8, 0.8, 0.8,1),
         0.5, 
         0.5
     );
@@ -64,12 +69,12 @@ int main()
     );
     auto blue = std::make_shared<Material_PBM>(
         Color(0, 0, 1,1),
-        0.5,
-        0.5
+        0.9,
+        0.9
     );
     auto white_Light = std::make_shared<Material_PBM>(
         Vector3(1,1,1),
-        1000000000
+        100000000
     );
 
     // create objects
@@ -80,45 +85,60 @@ int main()
         Vector3(555.0,0.0,0.0),
         Vector3(0,0,555),
         Vector3(0,555,0),
+#ifdef RENDERMODE_PBR
         green
-        //green_Lambert
-        //greenDebug
+#endif
+#ifdef RENDERMODE_DEBUG
+        green_Lambert
+#endif
     );
     Quad* RedWall = new Quad(
         "RedWall",
         Vector3(0.0,0.0,555.0),
         Vector3(0,0,-555),
         Vector3(0,555,0),
+#ifdef RENDERMODE_PBR
         red
-        //red_Lambert
-        //redDebug
+#endif
+#ifdef RENDERMODE_DEBUG
+        red_Lambert
+#endif
     );
     Quad* WhiteWall = new Quad(
         "WhiteWall",
         Vector3(0.0,555.0,0.0),
         Vector3(555,0,0),
         Vector3(0,0,555),
-        //whiteDebug
-        //white_Lambert
+#ifdef RENDERMODE_PBR
         white
+#endif
+#ifdef RENDERMODE_DEBUG
+        white_Lambert
+#endif
     );
     Quad* WhiteWall2 = new Quad(
         "WhiteWall2",
         Vector3(0,0,555),
         Vector3(555,0,0),
         Vector3(0,0,-555),
-        //whiteDebug
-        //white_Lambert
+#ifdef RENDERMODE_PBR
         white
+#endif
+#ifdef RENDERMODE_DEBUG
+        white_Lambert
+#endif
     );
     Quad* WhiteWall3 = new Quad(
         "WhiteWall3",
         Vector3(555,0,555),
         Vector3(-555,0,0),
         Vector3(0,555,0),
-        //whiteDebug
-        //white_Lambert
+#ifdef RENDERMODE_PBR
         white
+#endif
+#ifdef RENDERMODE_DEBUG
+        white_Lambert
+#endif
     );
 
     //Box
@@ -132,11 +152,25 @@ int main()
     //Sphere
     Sphere* GlassSphere = new Sphere(
         "GlassSphere",
-        165,
-        Vector3(190,90,190),
-        //blueDebug
-        //blue_Lambert
+        90,
+        Vector3(190,90,290),
+#ifdef RENDERMODE_PBR
         blue
+#endif
+#ifdef RENDERMODE_DEBUG
+        blue_Lambert
+#endif
+    );
+    Sphere* DiffuseSphere = new Sphere(
+        "DiffuseSphere",
+        90,
+        Vector3(400,90,100),
+#ifdef RENDERMODE_PBR
+        blue
+#endif
+#ifdef RENDERMODE_DEBUG
+        yellow_Lambert
+#endif
     );
 
     // add lights to scene
@@ -145,9 +179,12 @@ int main()
         Vector3(343,554,332),
         Vector3(-130,0,0),
         Vector3(0,0,-105),
-        //redDebug
-        //WhiteLight_Lambert
+#ifdef RENDERMODE_PBR
         white_Light
+#endif
+#ifdef RENDERMODE_DEBUG
+        white_Light
+#endif
     );
 
     // create scene
@@ -161,6 +198,7 @@ int main()
     g_Scene->AddObject(WhiteWall3);
     // g_Scene->AddObject(WhiteBox);
     g_Scene->AddObject(GlassSphere);
+    g_Scene->AddObject(DiffuseSphere);
     g_Scene->AddObject(Light);
 
     // set up camera
@@ -168,7 +206,7 @@ int main()
         Vector3(280, 250, -600),
         Vector3(  0,   0,    1),
         Vector3(0.0, 1.0,  0.0),
-        1920,
+        1920 /2,
         1080,
         135
         );

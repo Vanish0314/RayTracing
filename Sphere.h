@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-14 21:35:30
+ * @LastEditTime: 2024-06-15 02:01:51
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -70,7 +70,7 @@ void Hit (const Ray& ray ,const Interval interval,HitRecord& hitRecord)
 
         //Configure the hit record
         hitRecord.hitPoint = ray.at(hitRecord.t);
-        hitRecord.normal = (hitRecord.hitPoint - position).Normalized();
+        hitRecord.normal = (hitRecord.hitPoint - position).Normalized();    
         hitRecord.material = material;
         hitRecord.isFrontFace = (ray.direction.Dot(hitRecord.normal) < 0);
         hitRecord.u = GetUAt(hitRecord.hitPoint);

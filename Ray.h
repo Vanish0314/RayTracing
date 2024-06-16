@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-14 23:20:38
+ * @LastEditTime: 2024-06-16 21:44:45
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -82,6 +82,7 @@ public:
     double  t           = -1;//在方向上行进的距离
 public:
     Ray(Vector3 _origin, Vector3 _direction):origin(_origin),direction(_direction){}
+    Ray(const Ray& other):depth(other.depth),origin(other.origin),direction(other.direction),t(other.t){}
     ~Ray(){}
 public:
     Vector3 at(double t) const { return origin + direction * t; }

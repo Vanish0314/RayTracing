@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-14 20:35:30
+ * @LastEditTime: 2024-06-15 20:37:55
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -16,6 +16,7 @@
 #include "Scene.h"
 #include "Ray.h"
 #include "Color.h"
+#include "Random.h"
 
 class Camera
 {

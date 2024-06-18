@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-15 02:01:51
+ * @LastEditTime: 2024-06-18 13:39:19
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -45,10 +45,6 @@ void Hit (const Ray& ray ,const Interval interval,HitRecord& hitRecord)
         // t = (-b +- sqrt(discriminant)) / (2*a)
         float t1 = (-b - std::sqrt(discriminant)) / (2 * a);
         float t2 = (-b + std::sqrt(discriminant)) / (2 * a);
-
-        // FIXME:不知道为什么这里算出来t1t2是反的，但暂时先没改了
-        t1 = -t1;
-        t2 = -t2;
 
         // 判断t是否在interval范围内
         t1 = t1 > 0 ? t1 : 0;

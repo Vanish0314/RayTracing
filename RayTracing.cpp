@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-06-01 21:38:49
- * @LastEditTime: 2024-06-16 22:05:20
+ * @LastEditTime: 2024-06-18 13:46:06
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -197,8 +197,8 @@ int main()
     g_Scene->AddObject(WhiteWall2);
     g_Scene->AddObject(WhiteWall3);
     // g_Scene->AddObject(WhiteBox);
-    g_Scene->AddObject(GlassSphere);
-    g_Scene->AddObject(DiffuseSphere);
+    //g_Scene->AddObject(GlassSphere);
+    //g_Scene->AddObject(DiffuseSphere);
     g_Scene->AddObject(Light);
 
     // set up camera

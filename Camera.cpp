@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:26
- * @LastEditTime: 2024-06-16 21:55:15
+ * @LastEditTime: 2024-06-18 13:33:04
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -32,7 +32,7 @@ void Camera::Render(const Scene &scene, std::ostream &output)
         for (int x = 0; x < imageWidth; x++)
         {
 #ifdef DEBUG_TRACERAY
-                Random::consoleOutPutEnable = Random::GenerateDouble(0,1) < imageHeight*imageWidth*0.000000000001;
+                Random::consoleOutPutEnable = Random::GenerateDouble(0,1) < 0.000001;
 #endif
             // 渲染每个像素
             for (int i = 0; i < samplesPerPixel; i++)

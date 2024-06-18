@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-06-02 04:28:38
- * @LastEditTime: 2024-06-16 21:46:38
+ * @LastEditTime: 2024-06-18 13:43:18
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -11,7 +11,8 @@
 double PDF::SampleHemisphere(Vector3 point,Ray& result,Vector3 normal)
 {
 
-    Vector3 randomVec = Vector3::RandomInHemisphere(normal);
+    //Vector3 randomVec = Vector3::RandomInHemisphere(normal);
+    Vector3 randomVec = Vector3::Reflect(result.direction,normal);
     result.origin = point + normal * 0.00001;
     result.direction = randomVec.Normalized();
     result.depth++;
@@ -39,8 +40,10 @@ Vector3 Material::RadianceColorful(Vector3 radiance)
 
 
 Vector3 Material_BlinnPhong::Shade(Ray& ray_In, HitRecord& hitRecord)
-{
+{   
     Vector3 result = Vector3(0, 0, 0);
+    if(ray_In.depth >= RAY_DEPTH) return result;
+
     for (auto light : g_Scene->lights)
     {
         float dot = 0;
@@ -55,7 +58,7 @@ Vector3 Material_BlinnPhong::Shade(Ray& ray_In, HitRecord& hitRecord)
     ray_In.t = 0;
     ray_In.depth++;
     Vector3 bounceColor = ray_In.Trace(Interval());
-    result = result + bounceColor * std::pow(0.5, ray_In.depth);
+    result += bounceColor * std::pow(0.5, ray_In.depth);
     
     return result;
 

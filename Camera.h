@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-15 20:37:55
+ * @LastEditTime: 2024-06-19 08:13:37
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -60,7 +60,7 @@ public:
 private:
 	void WriteFileHeader(std::ostream& output);
 	void GetRay(int pixelIndexX,int pixelIndexY,Ray& ray);
-	Color PerPixelShading(Ray& ray, const Scene& scene);
+	Color RadianceToColor(Vector3 radiance);
 	void WritePixelColor(std::ostream& output,Color& color);
 
 private:

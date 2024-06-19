@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:26
- * @LastEditTime: 2024-06-18 13:33:04
+ * @LastEditTime: 2024-06-19 10:26:07
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -13,6 +13,7 @@ void Camera::Render(const Scene &scene, std::ostream &output)
     WriteFileHeader(output);
 
     Color color = Color(0, 0, 0, 1);
+    Vector3 radiance = Vector3(0, 0, 0);
 
     double progress = 0;
     // 逐像素渲染,从左到右，从上到下
@@ -41,19 +42,21 @@ void Camera::Render(const Scene &scene, std::ostream &output)
                 Ray ray = Ray(Vector3(0, 0, 0), Vector3(0, 0, 0));
                 GetRay(x, y, ray);
 
-                color += PerPixelShading(ray, scene);
+                radiance += ray.Trace(Interval());
 #ifdef DEBUG_TRACERAY
                 if(Random::consoleOutPutEnable)
-                    std::cout << "\033[31m" <<i+1<<"/"<<samplesPerPixel<<"光线像素结果:【" << color.r << "," << color.g << "," << color.b << "】" << "\033[m" << "/////==/////";
+                    std::cout << "\033[31m" <<i+1<<"/"<<samplesPerPixel<<"光线像素结果:【" << radiance.x << "," << radiance.y << "," << radiance.z << "】" << "\033[m" << "/////==/////";
 #endif
             }
-            color /= samplesPerPixel;
+            radiance = radiance / samplesPerPixel;
+            color = RadianceToColor(radiance);
 #ifdef DEBUG_TRACERAY
             if(Random::consoleOutPutEnable)
                 std::cout << "\033[31m" << "像素最终结果:【" << color.r << "," << color.g << "," << color.b << "】" << "\033[m" << std::endl;
 #endif
             WritePixelColor(output, color);
             color = Color(0, 0, 0, 1);
+            radiance = Vector3(0, 0, 0);
         }
     }
     std::cout << "渲染完成" << std::endl;
@@ -68,6 +71,7 @@ void Camera::WriteFileHeader(std::ostream &output)
 void Camera::GetRay(int pixelIndexX, int pixelIndexY, Ray &ray)
 {
     Vector3 bias = pixel_00_Location + pixelDeltaX * pixelIndexX - pixelDeltaY * pixelIndexY;
+    bias += pixelDeltaX * 0.49 * Random::GenerateDouble(-1, 1) - pixelDeltaY * 0.49 * Random::GenerateDouble(-1, 1);
 
     Vector3 origin    = m_position;
     Vector3 direction = (bias - origin).Normalized();
@@ -80,26 +84,24 @@ void Camera::GetRay(int pixelIndexX, int pixelIndexY, Ray &ray)
 /// @param scene 场景
 /// @param pixelIndex 像素索引
 /// @return 返回该像素的颜色
-Color Camera::PerPixelShading(Ray &ray, const Scene &scene)
+Color Camera::RadianceToColor(Vector3 radiance)
 {
-    // 计算辐照度
-    Vector3 radiance;
-    radiance = ray.Trace(Interval());
+    // // 计算辐照度
+    // Vector3 radiance;
+    // radiance = ray.Trace(Interval());
 
     // // 辐照度颜色化
-
-    // // Step1:映射到颜色空间，由于暂时没有定义辐照度的光谱采样情况，这一步可以掠过(实际上什么都没干)
-    // Vector3 convertedRadiance   = Color::Linear_To_SRGB(radiance);
-    // // Step2:色调映射
-    // Vector3 mappedRadiance      = Color::ToneMapping_ACES(convertedRadiance);
-    // // step3:伽马矫正
-    // Color   gammaCorrectedColor = Color::GammaCorrection(mappedRadiance, 2.2f);
-
-    // // 返回颜色
-    // return gammaCorrectedColor;
-
-    radiance = radiance/400;
-    return Color(radiance.x, radiance.y, radiance.z, 1);
+    //Step1: 将SPD转换到XYZ空间 这里不做变换
+    Vector3 XYZ = radiance;
+    //Step2: XYZ TO RGB
+    Vector3 RGB = Color::XYZToRGB(XYZ);
+    //Step3: 色调映射
+    Vector3 TomeMapped = Color::ToneMapping_ACES(RGB);
+    //Step4: 伽马校正
+    Color GammaCorrected = Color::GammaCorrection(RGB, 1.0 / 2.2);
+    
+    return GammaCorrected;
+    
 }
 
 void Camera::WritePixelColor(std::ostream &output, Color &color)

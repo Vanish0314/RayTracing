@@ -48,6 +48,13 @@
         "sstream": "cpp",
         "ctime": "cpp",
         "iomanip": "cpp",
-        "cstdarg": "cpp"
-    }
+        "cstdarg": "cpp",
+        "cmaek.generator": "MinGW Makefiles",
+        "charconv": "cpp",
+        "cstring": "cpp",
+        "format": "cpp",
+        "span": "cpp",
+        "variant": "cpp"
+    },
+    "C_Cpp.default.compilerPath": "C:\\msys64\\ucrt64\\bin\\g++.exe"
 }

@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-06-01 21:38:49
- * @LastEditTime: 2024-06-18 13:46:06
+ * @LastEditTime: 2024-06-19 11:08:57
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -57,13 +57,18 @@ int main()
         0.5,
         0.5
     );
+    auto grey = std::make_shared<Material_PBM>(
+        Color(0.5, 0.5, 0.5,1),
+        0.5,
+        0.5
+    );
     auto red = std::make_shared<Material_PBM>(
-        Color(1, 0, 0,1),
+        Color(1, 1, 0,1),
         0.5,
         0.5
     );
     auto green = std::make_shared<Material_PBM>(
-        Color(0, 1, 0,1),
+        Color(0, 1, 1,1),
         0.5,
         0.5
     );
@@ -74,7 +79,7 @@ int main()
     );
     auto white_Light = std::make_shared<Material_PBM>(
         Vector3(1,1,1),
-        100000000
+        600
     );
 
     // create objects
@@ -141,8 +146,7 @@ int main()
 #endif
     );
 
-    //Box
-    // Box* WhiteBox = new Box(
+    // Box* greyBox = new Box(
     //     "WhiteBox",
     //     Vector3(0,0,0),
     //     Vector3(165,330,165),
@@ -160,7 +164,7 @@ int main()
 #ifdef RENDERMODE_DEBUG
         blue_Lambert
 #endif
-    );
+    ); 
     Sphere* DiffuseSphere = new Sphere(
         "DiffuseSphere",
         90,
@@ -176,9 +180,9 @@ int main()
     // add lights to scene
     Quad* Light = new Quad(
         "Light",
-        Vector3(343,554,332),
-        Vector3(-130,0,0),
-        Vector3(0,0,-105),
+        Vector3(343+120,554,332 +120),
+        Vector3(-380,0,0),
+        Vector3(0,0,-380),
 #ifdef RENDERMODE_PBR
         white_Light
 #endif
@@ -196,7 +200,7 @@ int main()
     g_Scene->AddObject(WhiteWall);
     g_Scene->AddObject(WhiteWall2);
     g_Scene->AddObject(WhiteWall3);
-    // g_Scene->AddObject(WhiteBox);
+    //g_Scene->AddObject(greyBox);
     //g_Scene->AddObject(GlassSphere);
     //g_Scene->AddObject(DiffuseSphere);
     g_Scene->AddObject(Light);
@@ -210,7 +214,6 @@ int main()
         1080,
         135
         );
-
     // creat ppm image file
     std::ofstream outputFile("RayTracing.ppm");
     

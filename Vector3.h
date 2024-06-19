@@ -1,13 +1,16 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:57:21
- * @LastEditTime: 2024-06-15 21:06:38
+ * @LastEditTime: 2024-06-19 11:07:52
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
 #pragma once
 
 #include <cmath>
+#include <algorithm>
+
+#include "Random.h"
 
 class Vector3
 {
@@ -20,6 +23,10 @@ public:
     Vector3 operator+(const Vector3& other) const
     {
         return Vector3(x + other.x, y + other.y, z + other.z);
+    }
+    Vector3 operator+(const double& scalar) const
+    {
+        return Vector3(x + scalar, y + scalar, z + scalar);
     }
     Vector3 operator+=(const Vector3& other) 
     {
@@ -137,12 +144,20 @@ public:
 
     static Vector3 Random()
     {
-        return Vector3(2 * (rand() / (double)RAND_MAX, rand()) -1.0 , 2 * (rand() / (double)RAND_MAX, rand()) -1.0, 2 * (rand() / (double)RAND_MAX, rand()) -1.0);
+        return Vector3(
+            Random::GenerateDouble(-1,1),
+            Random::GenerateDouble(-1,1),
+            Random::GenerateDouble(-1,1)
+        ).Normalized();
     }
 
     static Vector3 Random(double min, double max)
     {
-        return Vector3(min + (max - min) * (rand() / (double)RAND_MAX), min + (max - min) * (rand() / (double)RAND_MAX), min + (max - min) * (rand() / (double)RAND_MAX));
+        return Vector3
+            (Random::GenerateDouble(min,max),
+             Random::GenerateDouble(min,max),
+             Random::GenerateDouble(min,max)
+            ).Normalized();
     }
 
 

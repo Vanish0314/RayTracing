@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 23:13:43
- * @LastEditTime: 2024-06-15 21:11:11
+ * @LastEditTime: 2024-06-19 10:17:41
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -29,6 +29,10 @@ Vector3 Color::Linear_To_SRGB(Vector3 radiance)
 
     return radiance;
 }
+Vector3 Color::XYZToRGB(Vector3 xyz)
+{
+    return xyz;
+}
 
 Vector3 Color::ToneMapping_ACES(Vector3 convertedRadiance)
 {
@@ -41,6 +45,7 @@ Vector3 Color::ToneMapping_ACES(Vector3 convertedRadiance)
     Vector3 color = convertedRadiance;
     Vector3 result = (color * (a * color + b)) / (color * (c * color + d) + e);
 
+
     return result;
 }
 
@@ -48,9 +53,9 @@ Color Color::GammaCorrection(Vector3 mappedRadiance,double gamma)
 {
     Vector3 gammaCorrected = Vector3(pow(mappedRadiance.x, 1.0 / gamma), pow(mappedRadiance.y, 1.0 / gamma), pow(mappedRadiance.z, 1.0 / gamma));
 
-    gammaCorrected.x = std::max(0.0, gammaCorrected.x);
-    gammaCorrected.y = std::max(0.0, gammaCorrected.y);
-    gammaCorrected.z = std::max(0.0, gammaCorrected.z);
+    gammaCorrected.x = std::max(0.0  , gammaCorrected.x);
+    gammaCorrected.y = std::max(0.0  , gammaCorrected.y);
+    gammaCorrected.z = std::max(0.0  , gammaCorrected.z);
     gammaCorrected.x = std::min(255.0, gammaCorrected.x);
     gammaCorrected.y = std::min(255.0, gammaCorrected.y);
     gammaCorrected.z = std::min(255.0, gammaCorrected.z);

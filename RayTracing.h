@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-05-31 03:56:56
- * @LastEditTime: 2024-06-18 13:46:29
+ * @LastEditTime: 2024-06-19 11:10:25
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -12,8 +12,8 @@
 #define RAY_DEPTH 4
 #define RUSSIAN_ROULETTE_PROBABILITY 0.80
 
-//#define DEBUG_TRACERAY
-#define CONSOLE_OUTPUT_RENDER_PROGRESS
+#define DEBUG_TRACERAY
+//#define CONSOLE_OUTPUT_RENDER_PROGRESS
 
 //#define RENDERMODE_DEBUG
 #define RENDERMODE_PBR

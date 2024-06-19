@@ -1,7 +1,7 @@
 /*
  * @Author: Vanish
  * @Date: 2024-06-02 04:28:38
- * @LastEditTime: 2024-06-18 13:43:18
+ * @LastEditTime: 2024-06-19 11:04:08
  * Also View: http://vanishing.cc
  * Copyright@ https://creativecommons.org/licenses/by/4.0/deed.zh-hans
  */
@@ -11,8 +11,14 @@
 double PDF::SampleHemisphere(Vector3 point,Ray& result,Vector3 normal)
 {
 
-    //Vector3 randomVec = Vector3::RandomInHemisphere(normal);
-    Vector3 randomVec = Vector3::Reflect(result.direction,normal);
+    Vector3 randomVec = Vector3::RandomInHemisphere(normal);
+    // Vector3 randomVec;
+    // while (randomVec.Dot(normal) < 0)
+    // {
+    //     randomVec = Vector3::Reflect(result.direction,Vector3(normal.x + Random::GenerateDouble(-1,1),normal.y + Random::GenerateDouble(-1,1),normal.z + Random::GenerateDouble(-1,1)).Normalized());
+    // }
+    
+    
     result.origin = point + normal * 0.00001;
     result.direction = randomVec.Normalized();
     result.depth++;
@@ -82,7 +88,8 @@ Vector3 Material_BlinnPhong::Shade(Ray& ray_In, HitRecord& hitRecord)
 Vector3 Material_PBM::Shade(Ray& ray_In, HitRecord& hitRecord)
 {
     //Ray inCopy = Ray(ray_In);
-    Vector3 x = ray_In.at(ray_In.t);
+    Vector3 x = ray_In.at(ray_In.t)
+    ;
     Vector3 wo = Vector3(0,0,0) - ray_In.direction;
     Vector3 normal = hitRecord.normal;
     double r = ray_In.t/100;
@@ -98,7 +105,7 @@ Vector3 Material_PBM::Shade(Ray& ray_In, HitRecord& hitRecord)
     //不知道为什么result为0时/r^2会变成无穷大，所以先这么将就一下
     if(result.Magnitude() == 0) return Vector3(0,0,0);
 
-    result = result;//光照衰减
+    result = result/(r*r);//光照衰减
     return result;
 }
 

@@ -46,6 +46,10 @@ void Hit (const Ray& ray ,const Interval interval,HitRecord& hitRecord)
         float t1 = (-b - std::sqrt(discriminant)) / (2 * a);
         float t2 = (-b + std::sqrt(discriminant)) / (2 * a);
 
+        //FIXME：不知道为什么t1t2都是反的，先暂时这样
+        t1 = -t1;
+        t2 = -t2;
+
         // 判断t是否在interval范围内
         t1 = t1 > 0 ? t1 : 0;
         t2 = t2 > 0 ? t2 : 0;
